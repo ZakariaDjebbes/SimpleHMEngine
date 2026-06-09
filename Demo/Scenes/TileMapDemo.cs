@@ -7,7 +7,7 @@ using SFML.System;
 using SFML.Window;
 using ZGeometry.Primitives.Point;
 
-namespace NoGfx.Scenes;
+namespace Demo.Scenes;
 
 /// <summary>
 /// Showcases the <see cref="TileMap"/> and <see cref="Camera"/>: a tiled map built from a sprite

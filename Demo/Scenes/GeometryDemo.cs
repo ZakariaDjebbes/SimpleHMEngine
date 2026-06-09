@@ -1,6 +1,5 @@
 using Core.Drawing;
 using Core.Drawing.UserInterface;
-using Core.Engine;
 using Core.Entity;
 using Core.Input;
 using Core.Utils;
@@ -14,7 +13,7 @@ using ZGeometry.Primitives.Point;
 using ZGeometry.Primitives.Rectangle;
 using ZGeometry.Primitives.Triangle;
 
-namespace NoGfx.Scenes;
+namespace Demo.Scenes;
 
 /// <summary>
 /// Showcases the ZGeometry library: a mouse-controlled probe circle tested against a rectangle,

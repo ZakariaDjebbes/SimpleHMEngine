@@ -4,7 +4,7 @@ using Core.Engine;
 using Core.Entity;
 using SFML.System;
 
-namespace NoGfx.Demo;
+namespace Demo.Demo;
 
 public class BouncingBall : Component
 {
