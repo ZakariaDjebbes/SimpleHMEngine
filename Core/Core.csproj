@@ -1,0 +1,51 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <!-- NuGet package metadata -->
+    <PropertyGroup>
+        <PackageId>SimpleHMEngine</PackageId>
+        <Version>0.2.1</Version>
+        <Authors>Zakaria Djebbes</Authors>
+        <Company>Zakaria Djebbes</Company>
+        <Product>SimpleHMEngine</Product>
+        <Title>SimpleHMEngine — a simple hand-made 2D game engine</Title>
+        <Description>A small, hobby 2D game engine built on SFML.Net: game loop, scene/component tree, input binding, camera, simple collision, an immediate-mode drawing helper, and a lightweight UI toolkit. Great for prototypes, game jams and learning — not a production engine.</Description>
+        <PackageTags>game;engine;2d;sfml;gamedev;game-engine;hobby</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://github.com/ZakariaDjebbes/NoGfx</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ZakariaDjebbes/NoGfx.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReleaseNotes>0.2.1: Fixed a bug with the default font embeded assembly loader.</PackageReleaseNotes>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DefineConstants>TRACE;DEBUG</DefineConstants>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="SFML.Net" Version="2.6.0" />
+    </ItemGroup>
+
+    <!-- ZGeometry is published as its own package; depend on it normally.
+         Publish ZGeometry to NuGet before (or alongside) this package. -->
+    <ItemGroup>
+      <ProjectReference Include="..\ZGeometry\ZGeometry.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath="\" />
+      <EmbeddedResource Include="Resources\DefaultResources\default.ttf">
+        <LogicalName>Core.Resources.DefaultResources.default.ttf</LogicalName>
+      </EmbeddedResource>
+    </ItemGroup>
+
+</Project>

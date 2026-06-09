@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Demo", "NoGfx\Demo.csproj", "{12ECA52D-E451-4715-B877-BCB134903369}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{208F45F4-A748-4F71-86D2-6854CC427D13}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{D3798BD6-59C3-4570-99B4-60C62F417489}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZGeometry", "ZGeometry\ZGeometry.csproj", "{FE9F980A-FAEC-473F-A22E-B3A2166C5361}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{12ECA52D-E451-4715-B877-BCB134903369}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12ECA52D-E451-4715-B877-BCB134903369}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12ECA52D-E451-4715-B877-BCB134903369}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12ECA52D-E451-4715-B877-BCB134903369}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3798BD6-59C3-4570-99B4-60C62F417489}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3798BD6-59C3-4570-99B4-60C62F417489}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3798BD6-59C3-4570-99B4-60C62F417489}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3798BD6-59C3-4570-99B4-60C62F417489}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FE9F980A-FAEC-473F-A22E-B3A2166C5361}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FE9F980A-FAEC-473F-A22E-B3A2166C5361}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FE9F980A-FAEC-473F-A22E-B3A2166C5361}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FE9F980A-FAEC-473F-A22E-B3A2166C5361}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

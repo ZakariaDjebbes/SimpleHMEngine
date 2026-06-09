@@ -1,0 +1,10 @@
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+.idea/*
+publish
+nogfx-engine-skill.md
+# ReSharper/Rider per-user settings
+*.DotSettings.user

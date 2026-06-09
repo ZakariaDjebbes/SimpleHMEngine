@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>disable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <!-- NuGet package metadata -->
+    <PropertyGroup>
+        <PackageId>ZGeometry</PackageId>
+        <Version>0.2.0</Version>
+        <Authors>Zakaria Djebbes</Authors>
+        <Company>Zakaria Djebbes</Company>
+        <Product>ZGeometry</Product>
+        <Title>ZGeometry — a simple generic 2D geometry library</Title>
+        <Description>A small, generic 2D geometry library for .NET: a numeric Vector2D&lt;T&gt; and primitives (circle, rectangle, triangle, line, point) with fluent Overlaps/Contains/Intersects queries, generic over any INumber&lt;T&gt;. A hobby library, great for games, prototypes and learning.</Description>
+        <PackageTags>geometry;2d;math;vector;collision;intersection;gamedev;hobby</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageProjectUrl>https://github.com/ZakariaDjebbes/NoGfx</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ZakariaDjebbes/NoGfx.git</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageReleaseNotes>0.2.0: Packaged README and standard NuGet metadata; published as a standalone package.</PackageReleaseNotes>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+</Project>
