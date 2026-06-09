@@ -1,3 +1,4 @@
+using System.Runtime.InteropServices;
 using SFML.Graphics;
 
 namespace Core.Resources;
@@ -14,9 +15,14 @@ public static class EmbeddedResources
 
     private static Font _defaultFont;
 
-    // Kept alive for the whole app lifetime on purpose: SFML reads font glyphs lazily from this
-    // stream, so it must never be disposed or garbage-collected while the font is in use.
-    private static MemoryStream _defaultFontStream;
+    // The font bytes are kept referenced AND pinned for the whole app lifetime. SFML's
+    // sfFont_createFromMemory keeps a raw pointer into this buffer without copying it and reads
+    // glyphs lazily, so the data must never move (GC compaction) or be collected — otherwise SFML
+    // reads freed/moved memory and crashes (0xC0000005). Pinning prevents both.
+    // (The Font(Stream) overload is NOT a safe alternative: its StreamAdaptor callback delegates
+    // get garbage-collected and SFML then invokes a dead delegate.)
+    private static byte[] _fontBytes;
+    private static GCHandle _fontHandle;
 
     /// <summary>
     /// The engine's built-in font, loaded once from the embedded assembly resource.
@@ -31,15 +37,12 @@ public static class EmbeddedResources
             ?? throw new InvalidOperationException(
                 $"Embedded font resource '{DefaultFontResource}' was not found in assembly '{assembly.GetName().Name}'.");
 
-        // Copy into a seekable MemoryStream and keep it rooted in a static field. We must use the
-        // Stream constructor (not Font(byte[])): SFML's createFromMemory holds a raw pointer to the
-        // buffer without copying it, so the byte[] would be moved/collected by the GC and SFML would
-        // later read freed memory (a random 0xC0000005 crash when glyphs are lazily loaded). The
-        // Stream constructor instead reads through a retained managed adaptor, which is GC-safe.
-        _defaultFontStream = new MemoryStream();
-        resource.CopyTo(_defaultFontStream);
-        _defaultFontStream.Position = 0;
+        using var memory = new MemoryStream();
+        resource.CopyTo(memory);
 
-        return new Font(_defaultFontStream);
+        _fontBytes = memory.ToArray();
+        _fontHandle = GCHandle.Alloc(_fontBytes, GCHandleType.Pinned);
+
+        return new Font(_fontBytes);
     }
 }
