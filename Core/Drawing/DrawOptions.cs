@@ -38,6 +38,9 @@ public class DrawOptions
     public float? Opacity { get; set; }
 }
 
+/// <summary>
+/// Drawing options for text, adding font and character-size choices on top of <see cref="DrawOptions"/>.
+/// </summary>
 public class TextDrawOptions : DrawOptions
 {
     /// <summary>

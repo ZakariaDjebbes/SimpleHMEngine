@@ -209,6 +209,7 @@ public abstract class Scene : IEntity
     {
     }
 
+    /// <summary>Called every frame for scene-level debug rendering. Override to add debug visuals.</summary>
     public void OnDebugRender()
     {
     }
@@ -227,6 +228,8 @@ public abstract class Scene : IEntity
     /// <param name="component">The component to add.</param>
     public void AddComponent(Component component) => _sceneComponents.Add(component);
 
+    /// <summary>Adds several components to the scene, ignoring any null entries.</summary>
+    /// <param name="components">The components to add.</param>
     public void AddComponents(params Component[] components)
     {
         foreach (var component in components)

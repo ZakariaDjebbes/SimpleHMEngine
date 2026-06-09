@@ -32,6 +32,7 @@ public class Camera : Component
     /// </summary>
     public float Smoothing { get; set; }
 
+    /// <summary>Creates the view centered on the focus point and applies it to the window.</summary>
     protected override void Start()
     {
         var window = GameContext.CurrentWindow;
@@ -39,6 +40,7 @@ public class Camera : Component
         window.SetView(_view);
     }
 
+    /// <summary>Tracks the target each frame, applying zoom and smoothing, and updates the window view.</summary>
     protected override void Update()
     {
         var window = GameContext.CurrentWindow;

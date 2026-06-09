@@ -186,7 +186,6 @@ public static class Draw
     /// </summary>
     /// <param name="text">The text to draw.</param>
     /// <param name="position">The position of the text's top-left corner.</param>
-    /// <param name="characterSize">The character size in pixels.</param>
     /// <param name="options">Optional drawing options. <c>FillColor</c> sets the text color.</param>
     public static void Text(string text, Vector2f position, TextDrawOptions options = null)
     {

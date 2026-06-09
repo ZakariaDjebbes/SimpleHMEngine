@@ -32,6 +32,7 @@ public class UiCanvas : Component
         }
     }
 
+    /// <summary>Measures, anchors and starts every root element.</summary>
     protected override void Start()
     {
         var area = ScreenRect;
@@ -43,6 +44,7 @@ public class UiCanvas : Component
         }
     }
 
+    /// <summary>Re-measures and re-anchors each root against the current window, then updates it.</summary>
     protected override void Update()
     {
         var area = ScreenRect;
@@ -54,6 +56,7 @@ public class UiCanvas : Component
         }
     }
 
+    /// <summary>Renders the roots in screen space, temporarily switching to the window's default view.</summary>
     protected override void Render()
     {
         var window = GameContext.CurrentWindow;
@@ -67,6 +70,7 @@ public class UiCanvas : Component
         window.SetView(previous);
     }
 
+    /// <summary>Debug-renders the roots in screen space.</summary>
     protected override void DebugRender()
     {
         var window = GameContext.CurrentWindow;
@@ -79,6 +83,7 @@ public class UiCanvas : Component
         window.SetView(previous);
     }
 
+    /// <summary>Closes every root element.</summary>
     protected override void Close()
     {
         foreach (var root in _roots)

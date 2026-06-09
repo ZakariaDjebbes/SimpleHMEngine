@@ -11,9 +11,24 @@ namespace Core.Drawing.UserInterface;
 /// </summary>
 public enum Anchor
 {
-    TopLeft, TopCenter, TopRight,
-    MiddleLeft, Center, MiddleRight,
-    BottomLeft, BottomCenter, BottomRight
+    /// <summary>Top-left corner.</summary>
+    TopLeft,
+    /// <summary>Top edge, horizontally centered.</summary>
+    TopCenter,
+    /// <summary>Top-right corner.</summary>
+    TopRight,
+    /// <summary>Left edge, vertically centered.</summary>
+    MiddleLeft,
+    /// <summary>Centered on both axes.</summary>
+    Center,
+    /// <summary>Right edge, vertically centered.</summary>
+    MiddleRight,
+    /// <summary>Bottom-left corner.</summary>
+    BottomLeft,
+    /// <summary>Bottom edge, horizontally centered.</summary>
+    BottomCenter,
+    /// <summary>Bottom-right corner.</summary>
+    BottomRight
 }
 
 /// <summary>
@@ -37,12 +52,22 @@ public abstract class UiElement : Component
     /// <summary>Whether the element responds to the mouse (hover/click). Containers turn this off.</summary>
     public bool Interactive { get; set; } = true;
 
+    /// <summary>Raised when the element is clicked (a press and release both inside it).</summary>
     public event Action Clicked;
+
+    /// <summary>Raised on the frame the pointer first enters the element.</summary>
     public event Action HoverEnter;
+
+    /// <summary>Raised every frame while the pointer is over the element.</summary>
     public event Action HoverStay;
+
+    /// <summary>Raised on the frame the pointer leaves the element.</summary>
     public event Action HoverExit;
 
+    /// <summary>Whether the pointer is currently over the element.</summary>
     protected bool IsHovered { get; private set; }
+
+    /// <summary>Whether the element is currently pressed (hovered with the left button down).</summary>
     protected bool IsHeld { get; private set; }
 
     private bool _wasHovered;
@@ -81,6 +106,7 @@ public abstract class UiElement : Component
         Position = new Vector2f(x + Margin.X, y + Margin.Y);
     }
 
+    /// <summary>Updates hover/press state from the pointer and raises hover/click events.</summary>
     protected override void Update()
     {
         if (!Interactive || !Visible)

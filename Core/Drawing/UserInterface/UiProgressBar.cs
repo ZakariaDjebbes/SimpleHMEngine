@@ -15,19 +15,34 @@ public class UiProgressBar : UiElement
     private readonly RectangleShape _fill = new();
     private readonly UiText _label = new();
 
+    /// <summary>The current value.</summary>
     public float Value { get; set; }
+
+    /// <summary>The value corresponding to a full bar.</summary>
     public float Max { get; set; } = 100f;
 
+    /// <summary>Optional source pulled every frame to set <see cref="Value"/>.</summary>
     public Func<float> ValueProvider { get; set; }
+
+    /// <summary>Optional source pulled every frame to set <see cref="Max"/>.</summary>
     public Func<float> MaxProvider { get; set; }
 
+    /// <summary>Color of the unfilled background.</summary>
     public Color BackgroundColor { get; set; } = UiTheme.Pressed;
+
+    /// <summary>Color of the filled portion.</summary>
     public Color FillColor { get; set; } = UiTheme.Accent;
+
+    /// <summary>Outline color.</summary>
     public Color OutlineColor { get; set; } = UiTheme.Outline;
+
+    /// <summary>Whether to draw a "value / max" label centered on the bar.</summary>
     public bool ShowLabel { get; set; }
 
+    /// <summary>The fill amount as a 0..1 fraction of <see cref="Max"/>.</summary>
     public float Fraction => Max <= 0 ? 0f : Math.Clamp(Value / Max, 0f, 1f);
 
+    /// <summary>Creates a non-interactive progress bar with a default size.</summary>
     public UiProgressBar()
     {
         Interactive = false;
@@ -35,11 +50,13 @@ public class UiProgressBar : UiElement
         _label.CharacterSize = 14;
     }
 
+    /// <summary>Attaches the label when <see cref="ShowLabel"/> is enabled.</summary>
     protected override void Start()
     {
         if (ShowLabel) AddComponent(_label);
     }
 
+    /// <summary>Pulls values from the providers and updates the centered label.</summary>
     protected override void Update()
     {
         if (ValueProvider is not null) Value = ValueProvider();
@@ -54,6 +71,7 @@ public class UiProgressBar : UiElement
             Position.Y + (Size.Y - _label.Size.Y) / 2f);
     }
 
+    /// <summary>Draws the background and the filled portion.</summary>
     protected override void Render()
     {
         if (!Visible) return;

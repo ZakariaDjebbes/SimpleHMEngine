@@ -22,9 +22,19 @@ public static partial class FluentGeometryContains
     public static bool Contains<T>(this Rectangle<T> rectangle, Vector2D<T> point) where T : struct, INumber<T>
         => Geometry.Contains(rectangle, point);   
     
+    /// <summary>Determines whether this rectangle fully contains another rectangle.</summary>
+    /// <typeparam name="T">The numeric type of the vector components.</typeparam>
+    /// <param name="rect1">The current (outer) rectangle.</param>
+    /// <param name="rect2">The rectangle to test for containment.</param>
+    /// <returns>True if <paramref name="rect2"/> lies entirely within <paramref name="rect1"/>; otherwise, false.</returns>
     public static bool Contains<T>(this Rectangle<T> rect1, Rectangle<T> rect2) where T : struct, INumber<T>
         => Geometry.Contains(rect1, rect2);
-    
+
+    /// <summary>Determines whether this rectangle fully contains a circle.</summary>
+    /// <typeparam name="T">The numeric type of the vector components.</typeparam>
+    /// <param name="rectangle">The current rectangle.</param>
+    /// <param name="circle">The circle to test for containment.</param>
+    /// <returns>True if the circle lies entirely within the rectangle; otherwise, false.</returns>
     public static bool Contains<T>(this Rectangle<T> rectangle, Circle<T> circle) where T : struct, INumber<T>
         => Geometry.Contains(rectangle, circle);
 

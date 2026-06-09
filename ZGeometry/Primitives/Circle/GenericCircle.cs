@@ -22,10 +22,11 @@ public struct Circle<T>(Vector2D<T> center = default, T radius = default)
     /// </summary>
     public T Radius { get; set; } = radius;
 
+    /// <summary>Gets or sets the diameter of the circle (twice the radius).</summary>
     public T Diameter { get; set; } = radius * T.CreateChecked(2);
     
     /// <summary>
-    /// Creates a new instance of the <see cref="Circle{T}"/> struct with <see cref="T"/> as the numeric type.
+    /// Creates a new instance of the <see cref="Circle{T}"/> struct with <typeparamref name="T"/> as the numeric type.
     /// </summary>
     /// <param name="center">The position of the rectangle.</param>
     /// <param name="radius">The size of the rectangle.</param>
@@ -33,7 +34,7 @@ public struct Circle<T>(Vector2D<T> center = default, T radius = default)
     public static Circle<T> Create(Vector2D<T> center, T radius) => new(center, radius);
 
     /// <summary>
-    /// Creates a new instance of the <see cref="Circle{T}"/> struct with <see cref="T"/> as the numeric type.
+    /// Creates a new instance of the <see cref="Circle{T}"/> struct with <typeparamref name="T"/> as the numeric type.
     /// </summary>
     /// <returns>A new <see cref="Circle{T}"/> instance with default values.</returns>
     public static Circle<T> Create() => new();

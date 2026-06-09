@@ -20,11 +20,21 @@ public static partial class Geometry
         => !(point.X < rectangle.Position.X || point.Y < rectangle.Position.Y ||
              point.X > rectangle.Position.X + rectangle.Size.X || point.Y > rectangle.Position.Y + rectangle.Size.Y);
 
+    /// <summary>Determines whether rectangle <paramref name="r1"/> fully contains rectangle <paramref name="r2"/>.</summary>
+    /// <typeparam name="T1">The numeric type of the vector components.</typeparam>
+    /// <param name="r1">The outer rectangle.</param>
+    /// <param name="r2">The rectangle to test for containment.</param>
+    /// <returns>True if <paramref name="r2"/> lies entirely within <paramref name="r1"/>; otherwise, false.</returns>
     public static bool Contains<T1>(Rectangle<T1> r1, Rectangle<T1> r2)
         where T1 : struct, INumber<T1>
         => r2.Position.X >= r1.Position.X && r2.Position.X + r2.Size.X <= r1.Position.X + r1.Size.X &&
            r2.Position.Y >= r1.Position.Y && r2.Position.Y + r2.Size.Y <= r1.Position.Y + r1.Size.Y;
 
+    /// <summary>Determines whether a rectangle fully contains a circle.</summary>
+    /// <typeparam name="T1">The numeric type of the vector components.</typeparam>
+    /// <param name="rect">The rectangle.</param>
+    /// <param name="circle">The circle to test for containment.</param>
+    /// <returns>True if the circle lies entirely within the rectangle; otherwise, false.</returns>
     public static bool Contains<T1>(Rectangle<T1> rect, Circle<T1> circle)
         where T1 : struct, INumber<T1>
         => rect.Position.X + circle.Radius <= circle.Center.X

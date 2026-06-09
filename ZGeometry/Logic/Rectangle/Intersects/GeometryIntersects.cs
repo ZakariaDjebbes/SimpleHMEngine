@@ -9,6 +9,11 @@ namespace ZGeometry.Logic;
 
 public static partial class Geometry
 {
+    /// <summary>Returns the points where a rectangle's edges cross a line.</summary>
+    /// <typeparam name="T1">The numeric type of the vector components.</typeparam>
+    /// <param name="rectangle">The rectangle.</param>
+    /// <param name="line">The line.</param>
+    /// <returns>The distinct intersection points.</returns>
     public static IEnumerable<Vector2D<T1>> Intersects<T1>(Rectangle<T1> rectangle, Line<T1> line)
         where T1 : struct, INumber<T1>
         => Intersects(line, rectangle);
@@ -24,6 +29,11 @@ public static partial class Geometry
         where T1 : struct, INumber<T1>
         => Intersects(triangle, rectangle);
     
+    /// <summary>Returns the points where the edges of two rectangles cross.</summary>
+    /// <typeparam name="T1">The numeric type of the vector components.</typeparam>
+    /// <param name="rectangle1">The first rectangle.</param>
+    /// <param name="rectangle2">The second rectangle.</param>
+    /// <returns>The distinct intersection points.</returns>
     public static IEnumerable<Vector2D<T1>> Intersects<T1>(Rectangle<T1> rectangle1, Rectangle<T1> rectangle2)
         where T1 : struct, INumber<T1>
     {

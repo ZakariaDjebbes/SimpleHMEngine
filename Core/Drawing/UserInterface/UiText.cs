@@ -13,6 +13,7 @@ public class UiText : UiElement
 {
     private readonly Text _text = new();
 
+    /// <summary>Creates a non-interactive text label using the theme defaults.</summary>
     public UiText()
     {
         Interactive = false;
@@ -57,6 +58,7 @@ public class UiText : UiElement
         }
     }
 
+    /// <summary>Resolves the font (theme override or embedded default) and measures the text.</summary>
     protected override void Start()
     {
         _text.Font = UiTheme.FontPath is null
@@ -65,14 +67,17 @@ public class UiText : UiElement
         Measure();
     }
 
+    /// <summary>Sizes the element to the rendered text bounds.</summary>
     public override void Measure() => Size = TextSize;
 
+    /// <summary>Pulls content from <see cref="ContentProvider"/> (if set) and re-measures.</summary>
     protected override void Update()
     {
         if (ContentProvider is not null) Content = ContentProvider();
         Measure();
     }
 
+    /// <summary>Draws the text, compensating for SFML's glyph bounds offset.</summary>
     protected override void Render()
     {
         if (!Visible) return;

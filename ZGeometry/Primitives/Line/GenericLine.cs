@@ -32,7 +32,7 @@ public struct Line<T>(Vector2D<T> start = default, Vector2D<T> end = default)
     public static Line<T> Create(Vector2D<T> x, Vector2D<T> y) => new(x, y);
 
     /// <summary>
-    /// Creates a new instance of the <see cref="Line{T}"/> struct with <see cref="T"/> as the numeric type.
+    /// Creates a new instance of the <see cref="Line{T}"/> struct with <typeparamref name="T"/> as the numeric type.
     /// </summary>
     /// <returns>A new <see cref="Line{T}"/> instance with default values.</returns>
     public static Line<T> Create() => new();
