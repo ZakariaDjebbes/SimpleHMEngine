@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net8.0</TargetFramework>
@@ -22,7 +22,7 @@
         <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>0.2.0: Packaged README and standard NuGet metadata; published as a standalone package.</PackageReleaseNotes>
+        <PackageReleaseNotes>0.2.1: Packaged README and standard NuGet metadata; published as a standalone package.</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>

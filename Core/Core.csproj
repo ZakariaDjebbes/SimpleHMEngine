@@ -22,7 +22,7 @@
         <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>0.2.2: Fixed crashes in the embedded default-font loader by pinning the font bytes for the process lifetime — resolves both a random access violation (0xC0000005) and a "callback on a garbage collected delegate" crash when rendering text. (Supersedes the incomplete 0.2.1 fix.)</PackageReleaseNotes>
+        <PackageReleaseNotes>0.2.1: Fixed crashes in the embedded default-font loader by pinning the font bytes for the process lifetime — resolves both a random access violation (0xC0000005) and a "callback on a garbage collected delegate" crash when rendering text. (Supersedes the incomplete 0.2.1 fix.)</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
