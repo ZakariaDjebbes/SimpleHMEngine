@@ -19,8 +19,8 @@
         <PackageTags>geometry;2d;math;vector;collision;intersection;gamedev;hobby</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageProjectUrl>https://github.com/ZakariaDjebbes/NoGfx</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/ZakariaDjebbes/NoGfx.git</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageReleaseNotes>0.2.0: Packaged README and standard NuGet metadata; published as a standalone package.</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>

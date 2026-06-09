@@ -19,10 +19,10 @@
         <PackageTags>game;engine;2d;sfml;gamedev;game-engine;hobby</PackageTags>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageProjectUrl>https://github.com/ZakariaDjebbes/NoGfx</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/ZakariaDjebbes/NoGfx.git</RepositoryUrl>
+        <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>0.2.1: Fixed a bug with the default font embeded assembly loader.</PackageReleaseNotes>
+        <PackageReleaseNotes>0.2.1: Fixed a crash in the embedded default-font loader (a random access violation when text glyphs were loaded). Moved the project to its own repository.</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
