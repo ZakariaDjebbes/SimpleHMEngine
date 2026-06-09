@@ -39,11 +39,12 @@ public class TileMap(Vector2D<int> tileSize, string texture = TileMap.DefaultTex
     private VertexArray _vertices;
     private Texture _sheet;
 
+    /// <summary>Builds the tile vertex array on scene start.</summary>
     protected override void Start() => Rebuild();
 
     /// <summary>
     /// (Re)builds the vertex array from the current <see cref="Tiles"/>.
-    /// Call this after mutating <see cref="Tiles"/>, <see cref="Position"/> or <see cref="TileScale"/>.
+    /// Call this after mutating <see cref="Tiles"/>, <see cref="Component.Position"/> or <see cref="TileScale"/>.
     /// </summary>
     public void Rebuild()
     {
@@ -75,6 +76,7 @@ public class TileMap(Vector2D<int> tileSize, string texture = TileMap.DefaultTex
         }
     }
 
+    /// <summary>Draws all tiles in a single draw call using the cached vertex array.</summary>
     protected override void Render()
     {
         if (!Visible || _vertices is null) return;
@@ -82,6 +84,7 @@ public class TileMap(Vector2D<int> tileSize, string texture = TileMap.DefaultTex
         GameContext.CurrentWindow.Draw(_vertices, new RenderStates(_sheet));
     }
 
+    /// <summary>Draws a green outline around each tile cell.</summary>
     protected override void DebugRender()
     {
         if (!Visible) return;

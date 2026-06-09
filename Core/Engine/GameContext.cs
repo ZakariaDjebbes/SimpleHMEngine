@@ -27,7 +27,10 @@ public static class GameContext
     /// </summary>
     public static float Fps { get; private set; }
     
+    /// <summary>Whether debug rendering (collider/grid overlays) is enabled.</summary>
     public static bool IsDebugMode { get; set; } = false;
+
+    /// <summary>Whether the simulation is paused (skips physics/fixed-update work).</summary>
     public static bool IsPaused { get; set; } = false;
 
     /// <summary>

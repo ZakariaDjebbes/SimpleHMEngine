@@ -3,10 +3,24 @@ using SFML.System;
 namespace Core.Drawing.UserInterface;
 
 /// <summary>Layout direction for a <see cref="UiStackPanel"/>.</summary>
-public enum Orientation { Vertical, Horizontal }
+public enum Orientation
+{
+    /// <summary>Items are stacked top to bottom.</summary>
+    Vertical,
+    /// <summary>Items are laid out left to right.</summary>
+    Horizontal
+}
 
 /// <summary>Cross-axis alignment of items within a <see cref="UiStackPanel"/>.</summary>
-public enum ItemAlignment { Start, Center, End }
+public enum ItemAlignment
+{
+    /// <summary>Align items to the start of the cross axis.</summary>
+    Start,
+    /// <summary>Center items on the cross axis.</summary>
+    Center,
+    /// <summary>Align items to the end of the cross axis.</summary>
+    End
+}
 
 /// <summary>
 /// Arranges its children in a single row or column with configurable spacing, padding and
@@ -16,9 +30,16 @@ public class UiStackPanel : UiElement
 {
     private readonly List<UiElement> _items = [];
 
+    /// <summary>The direction items are laid out in.</summary>
     public Orientation Orientation { get; set; } = Orientation.Vertical;
+
+    /// <summary>Gap, in pixels, between consecutive items.</summary>
     public float Spacing { get; set; } = 10f;
+
+    /// <summary>Padding, in pixels, around the panel's content.</summary>
     public Vector2f Padding { get; set; }
+
+    /// <summary>How items are aligned on the cross axis.</summary>
     public ItemAlignment Alignment { get; set; } = ItemAlignment.Center;
 
     /// <summary>
@@ -34,6 +55,7 @@ public class UiStackPanel : UiElement
         return item;
     }
 
+    /// <summary>Sizes the panel to fit its items, accounting for spacing and padding.</summary>
     public override void Measure()
     {
         var width = 0f;
@@ -63,6 +85,7 @@ public class UiStackPanel : UiElement
         Size = new Vector2f(width + Padding.X * 2f, height + Padding.Y * 2f);
     }
 
+    /// <summary>Arranges the items, then runs base interaction handling.</summary>
     protected override void Update()
     {
         Arrange();

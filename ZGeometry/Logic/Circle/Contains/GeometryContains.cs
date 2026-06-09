@@ -19,6 +19,11 @@ public static partial class Geometry
     public static bool Contains<T>(Circle<T> circle, Vector2D<T> point) where T : struct, INumber<T>
         => (circle.Center - point).MagnitudeSquared() <= circle.Radius * circle.Radius;
 
+    /// <summary>Determines whether a circle fully contains a rectangle.</summary>
+    /// <typeparam name="T1">The numeric type of the vector components.</typeparam>
+    /// <param name="circle">The circle.</param>
+    /// <param name="rect">The rectangle to test for containment.</param>
+    /// <returns>True if all four corners of the rectangle lie inside the circle; otherwise, false.</returns>
     public static bool Contains<T1>(Circle<T1> circle, Rectangle<T1> rect)
         where T1 : struct, INumber<T1>
         => Contains(circle, rect.Position) &&

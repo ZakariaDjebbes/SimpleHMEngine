@@ -10,12 +10,16 @@ public class UiGrid : UiElement
 {
     private readonly List<UiElement> _items = [];
 
+    /// <summary>Number of columns in the grid.</summary>
     public int Columns { get; set; } = 2;
+
+    /// <summary>Spacing, in pixels, between cells horizontally and vertically.</summary>
     public Vector2f CellSpacing { get; set; } = new(10, 10);
 
     private float _cellWidth;
     private float _cellHeight;
 
+    /// <summary>Creates a non-interactive grid.</summary>
     public UiGrid() => Interactive = false;
 
     /// <summary>Adds a child and returns it for fluent wiring.</summary>
@@ -26,6 +30,7 @@ public class UiGrid : UiElement
         return item;
     }
 
+    /// <summary>Computes the uniform cell size and sizes the grid to fit all rows and columns.</summary>
     public override void Measure()
     {
         _cellWidth = 0f;
@@ -46,6 +51,7 @@ public class UiGrid : UiElement
             rows * _cellHeight + Math.Max(0, rows - 1) * CellSpacing.Y);
     }
 
+    /// <summary>Positions each child into its grid cell, then runs interaction handling.</summary>
     protected override void Update()
     {
         for (var i = 0; i < _items.Count; i++)

@@ -10,7 +10,7 @@
     <!-- NuGet package metadata -->
     <PropertyGroup>
         <PackageId>SimpleHMEngine</PackageId>
-        <Version>0.2.2</Version>
+        <Version>0.2.1</Version>
         <Authors>Zakaria Djebbes</Authors>
         <Company>Zakaria Djebbes</Company>
         <Product>SimpleHMEngine</Product>

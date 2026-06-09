@@ -9,6 +9,12 @@ namespace ZGeometry.Logic;
 
 public static partial class Geometry
 {
+    /// <summary>Returns the intersection point of two line segments, if any.</summary>
+    /// <typeparam name="T1">The numeric type of the vector components.</typeparam>
+    /// <param name="line1">The first line.</param>
+    /// <param name="line2">The second line.</param>
+    /// <param name="infinite">When true, treats the lines as infinite rather than bounded segments.</param>
+    /// <returns>A single intersection point, or an empty sequence if they do not intersect.</returns>
     public static IEnumerable<Vector2D<T1>> Intersects<T1>(Line<T1> line1, Line<T1> line2, bool infinite = false)
         where T1 : struct, INumber<T1>
     {
@@ -31,6 +37,11 @@ public static partial class Geometry
         return [line1.Start +  rn * line1.Vector];
     }
     
+    /// <summary>Returns the points where a line crosses the edges of a rectangle.</summary>
+    /// <typeparam name="T1">The numeric type of the vector components.</typeparam>
+    /// <param name="line">The line.</param>
+    /// <param name="rectangle">The rectangle.</param>
+    /// <returns>The distinct intersection points.</returns>
     public static IEnumerable<Vector2D<T1>> Intersects<T1>(Line<T1> line, Rectangle<T1> rectangle)
         where T1 : struct, INumber<T1>
     {

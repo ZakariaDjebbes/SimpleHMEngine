@@ -2,6 +2,12 @@
 
 namespace ZGeometry.Primitives.Point;
 
+/// <summary>
+/// A generic 2D vector with arithmetic operators and common vector math helpers.
+/// </summary>
+/// <typeparam name="T">The numeric component type.</typeparam>
+/// <param name="x">The initial X component.</param>
+/// <param name="y">The initial Y component.</param>
 public struct Vector2D<T>(T x, T y) : IEquatable<Vector2D<T>>
     where T : struct, INumber<T>
 {
@@ -143,21 +149,50 @@ public struct Vector2D<T>(T x, T y) : IEquatable<Vector2D<T>>
     }
 
     // Operator overloads for arithmetic operations with Vector2D<T>
+
+    /// <summary>Returns whether two vectors are component-wise equal.</summary>
     public static bool operator ==(Vector2D<T> lhs, Vector2D<T> rhs) => lhs.Equals(rhs);
+
+    /// <summary>Returns whether two vectors differ.</summary>
     public static bool operator !=(Vector2D<T> lhs, Vector2D<T> rhs) => !(lhs == rhs);
+
+    /// <summary>Adds two vectors component-wise.</summary>
     public static Vector2D<T> operator +(Vector2D<T> lhs, Vector2D<T> rhs) => new(lhs.X + rhs.X, lhs.Y + rhs.Y);
+
+    /// <summary>Adds a scalar to both components.</summary>
     public static Vector2D<T> operator +(Vector2D<T> lhs, T rhs) => new(lhs.X + rhs, lhs.Y + rhs);
+
+    /// <summary>Adds a scalar to both components.</summary>
     public static Vector2D<T> operator +(T lhs, Vector2D<T> rhs) => new(rhs.X + lhs, rhs.Y + lhs);
+
+    /// <summary>Subtracts two vectors component-wise.</summary>
     public static Vector2D<T> operator -(Vector2D<T> lhs, Vector2D<T> rhs) => new(lhs.X - rhs.X, lhs.Y - rhs.Y);
+
+    /// <summary>Multiplies two vectors component-wise.</summary>
     public static Vector2D<T> operator *(Vector2D<T> lhs, Vector2D<T> rhs) => new(lhs.X * rhs.X, lhs.Y * rhs.Y);
+
+    /// <summary>Divides two vectors component-wise.</summary>
     public static Vector2D<T> operator /(Vector2D<T> lhs, Vector2D<T> rhs) => new(lhs.X / rhs.X, lhs.Y / rhs.Y);
+
+    /// <summary>Scales a vector by a scalar.</summary>
     public static Vector2D<T> operator *(Vector2D<T> lhs, T scalar) => new(lhs.X * scalar, lhs.Y * scalar);
+
+    /// <summary>Scales a vector by a scalar.</summary>
     public static Vector2D<T> operator *(T scalar, Vector2D<T> lhs) => new(lhs.X * scalar, lhs.Y * scalar);
+
+    /// <summary>Divides a vector by a scalar.</summary>
     public static Vector2D<T> operator /(Vector2D<T> lhs, T scalar) => new(lhs.X / scalar, lhs.Y / scalar);
+
+    /// <summary>Negates both components.</summary>
     public static Vector2D<T> operator -(Vector2D<T> lhs) => new(-lhs.X, -lhs.Y);
+
+    /// <summary>Converts an (x, y) tuple to a vector.</summary>
     public static implicit operator Vector2D<T>((T, T) values) => new(values.Item1, values.Item2);
 
+    /// <summary>Returns whether this vector equals another component-wise.</summary>
     public bool Equals(Vector2D<T> other) => X.Equals(other.X) && Y.Equals(other.Y);
+
+    /// <summary>Returns a hash code combining both components.</summary>
     // ReSharper disable NonReadonlyMemberInGetHashCode
     public override int GetHashCode() => HashCode.Combine(X, Y);
     

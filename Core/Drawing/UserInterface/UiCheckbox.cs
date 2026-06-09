@@ -13,26 +13,39 @@ public class UiCheckbox : UiElement
     private const float LabelGap = 10f;
     private bool _checked;
 
+    /// <summary>Raised when the checked state changes, with the new value.</summary>
     public event Action<bool> CheckedChanged;
 
+    /// <summary>Box fill color when idle.</summary>
     public Color BoxColor { get; set; } = UiTheme.Surface;
+
+    /// <summary>Box fill color while hovered.</summary>
     public Color HoverColor { get; set; } = UiTheme.Hover;
+
+    /// <summary>Box fill color while pressed.</summary>
     public Color PressedColor { get; set; } = UiTheme.Pressed;
+
+    /// <summary>Box outline color.</summary>
     public Color OutlineColor { get; set; } = UiTheme.Outline;
+
+    /// <summary>Color of the check mark.</summary>
     public Color CheckColor { get; set; } = UiTheme.Accent;
 
+    /// <summary>Character size, in pixels, of the label.</summary>
     public uint CharSize
     {
         get => _label.CharacterSize;
         set => _label.CharacterSize = value;
     }
 
+    /// <summary>Color of the label text.</summary>
     public Color LabelColor
     {
         get => _label.Color;
         set => _label.Color = value;
     }
 
+    /// <summary>Whether the checkbox is checked. Setting it raises <see cref="CheckedChanged"/>.</summary>
     public bool Checked
     {
         get => _checked;
@@ -44,24 +57,28 @@ public class UiCheckbox : UiElement
         }
     }
 
+    /// <summary>The checkbox's text label.</summary>
     public string Label
     {
         get => _label.Content;
         set => _label.Content = value;
     }
 
+    /// <summary>Attaches the label and measures the element.</summary>
     protected override void Start()
     {
         AddComponent(_label);
         Measure();
     }
 
+    /// <summary>Sizes the element to fit the box plus the label.</summary>
     public override void Measure()
     {
         _label.Measure();
         Size = new Vector2f(_boxSize.X + LabelGap + _label.Size.X, MathF.Max(_boxSize.Y, _label.Size.Y));
     }
 
+    /// <summary>Runs interaction handling and positions the label beside the box.</summary>
     protected override void Update()
     {
         base.Update();
@@ -70,12 +87,14 @@ public class UiCheckbox : UiElement
             Position.Y + (_boxSize.Y - _label.Size.Y) / 2f);
     }
 
+    /// <summary>Toggles <see cref="Checked"/> and raises the click event.</summary>
     protected override void OnClick()
     {
         Checked = !Checked;
         base.OnClick();
     }
 
+    /// <summary>Draws the box and, when checked, the check mark.</summary>
     protected override void Render()
     {
         if (!Visible) return;

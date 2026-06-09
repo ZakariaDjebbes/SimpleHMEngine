@@ -353,10 +353,11 @@ public abstract class Component : IEntity
         _components.ForEach(c => c.OnRender());
     }
     
+    /// <summary>Recursively debug-renders this component and its children when debug mode is on.</summary>
     public void OnDebugRender()
     {
         if (!GameContext.IsDebugMode) return;
-        
+
         _components.ForEach(c => c.OnDebugRender());
         DebugRender();
     }

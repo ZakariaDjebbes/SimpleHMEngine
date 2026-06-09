@@ -20,19 +20,34 @@ public class UiSlider : UiElement
     private const float ThumbWidth = 12f;
     private const float TrackHeight = 6f;
 
+    /// <summary>Minimum value, mapped to the left end.</summary>
     public float Min { get; set; } = 0f;
+
+    /// <summary>Maximum value, mapped to the right end.</summary>
     public float Max { get; set; } = 1f;
+
+    /// <summary>The current value. Set via <see cref="SetValue"/> or by dragging.</summary>
     public float Value { get; private set; }
 
+    /// <summary>Raised when the value changes, with the new value.</summary>
     public event Action<float> ValueChanged;
 
+    /// <summary>Color of the slider track.</summary>
     public Color TrackColor { get; set; } = UiTheme.Pressed;
+
+    /// <summary>Color of the filled portion of the track.</summary>
     public Color FillColor { get; set; } = UiTheme.AccentDark;
+
+    /// <summary>Color of the draggable thumb.</summary>
     public Color ThumbColor { get; set; } = UiTheme.Accent;
+
+    /// <summary>Outline color of the track and thumb.</summary>
     public Color OutlineColor { get; set; } = UiTheme.Outline;
 
+    /// <summary>The value as a 0..1 fraction of the <see cref="Min"/>..<see cref="Max"/> range.</summary>
     public float Fraction => Max <= Min ? 0f : Math.Clamp((Value - Min) / (Max - Min), 0f, 1f);
 
+    /// <summary>Creates a slider with a default size.</summary>
     public UiSlider() => Size = new Vector2f(200, 24);
 
     /// <summary>Sets the value (clamped) and raises <see cref="ValueChanged"/> if it changed.</summary>
@@ -44,6 +59,7 @@ public class UiSlider : UiElement
         ValueChanged?.Invoke(Value);
     }
 
+    /// <summary>Begins/continues dragging and maps the pointer position to the value.</summary>
     protected override void Update()
     {
         var mouse = MouseUtils.GetUiMousePosition();
@@ -59,6 +75,7 @@ public class UiSlider : UiElement
         }
     }
 
+    /// <summary>Draws the track, the filled portion and the thumb.</summary>
     protected override void Render()
     {
         if (!Visible) return;

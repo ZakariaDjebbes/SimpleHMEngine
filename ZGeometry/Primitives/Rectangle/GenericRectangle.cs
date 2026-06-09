@@ -27,7 +27,7 @@ public struct Rectangle<T>(Vector2D<T> position = default, Vector2D<T> size = de
     public int SideCount = 4;
 
     /// <summary>
-    /// Creates a new instance of the <see cref="Rectangle{T}"/> struct with <see cref="T"/> as the numeric type.
+    /// Creates a new instance of the <see cref="Rectangle{T}"/> struct with <typeparamref name="T"/> as the numeric type.
     /// </summary>
     /// <param name="position">The position of the rectangle.</param>
     /// <param name="size">The size of the rectangle.</param>
@@ -35,7 +35,7 @@ public struct Rectangle<T>(Vector2D<T> position = default, Vector2D<T> size = de
     public static Rectangle<T> Create(Vector2D<T> position, Vector2D<T> size) => new(position, size);
 
     /// <summary>
-    /// Creates a new instance of the <see cref="Rectangle{T}"/> struct with <see cref="T"/> as the numeric type.
+    /// Creates a new instance of the <see cref="Rectangle{T}"/> struct with <typeparamref name="T"/> as the numeric type.
     /// </summary>
     /// <returns>A new <see cref="Rectangle{T}"/> instance with default values.</returns>
     public static Rectangle<T> Create() => new();

@@ -86,5 +86,6 @@ public readonly struct Triangle<T> where T : struct, INumber<T>
                             + new Line<T>(Position[1], Position[2]).Length
                             + new Line<T>(Position[2], Position[0]).Length;
     
+    /// <summary>Converts a tuple of three vertices into a <see cref="Triangle{T}"/>.</summary>
     public static implicit operator Triangle<T>((Vector2D<T>, Vector2D<T>, Vector2D<T>) values) => new(values.Item1, values.Item2, values.Item3);
 }
