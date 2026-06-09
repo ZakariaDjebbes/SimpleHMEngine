@@ -3,7 +3,7 @@ using Core.Engine;
 using Core.Entity;
 using SFML.System;
 
-namespace NoGfx.Scenes;
+namespace Demo.Scenes;
 
 /// <summary>
 /// The demo hub. Each button switches to a scene that showcases one area of the engine.

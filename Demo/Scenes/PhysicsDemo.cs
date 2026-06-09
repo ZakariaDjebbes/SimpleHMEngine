@@ -4,12 +4,12 @@ using Core.Drawing.UserInterface;
 using Core.Engine;
 using Core.Entity;
 using Core.Input;
-using NoGfx.Demo;
+using Demo.Demo;
 using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-namespace NoGfx.Scenes;
+namespace Demo.Scenes;
 
 /// <summary>
 /// Showcases the collision system: a flock of <see cref="BouncingBall"/>s moving with fixed-update

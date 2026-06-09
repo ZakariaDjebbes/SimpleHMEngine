@@ -1,4 +1,4 @@
-﻿namespace NoGfx;
+﻿namespace Demo;
 
 public static class Program
 {

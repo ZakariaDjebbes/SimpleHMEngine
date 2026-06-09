@@ -7,7 +7,7 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-namespace NoGfx.Scenes;
+namespace Demo.Scenes;
 
 /// <summary>
 /// Showcases the immediate-mode <see cref="Draw"/> helper: circles, rectangles, triangles, lines,

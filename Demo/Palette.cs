@@ -1,6 +1,6 @@
 using SFML.Graphics;
 
-namespace NoGfx;
+namespace Demo;
 
 /// <summary>
 /// Demo-app color palette. Lives in the app (not the engine) — games own their own colors.

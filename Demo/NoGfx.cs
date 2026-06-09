@@ -1,9 +1,9 @@
 using Core.Drawing.UserInterface;
 using Core.Engine;
 using Core.Entity;
-using NoGfx.Scenes;
+using Demo.Scenes;
 
-namespace NoGfx;
+namespace Demo;
 
 public class NoGfx(uint height, uint width, string title) : UserWindow(height, width, title)
 {

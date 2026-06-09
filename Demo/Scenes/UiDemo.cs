@@ -7,7 +7,7 @@ using SFML.Graphics;
 using SFML.System;
 using SFML.Window;
 
-namespace NoGfx.Scenes;
+namespace Demo.Scenes;
 
 /// <summary>
 /// Showcases the UI toolkit: cards, stack panels, text, a slider, a progress bar, a checkbox and
