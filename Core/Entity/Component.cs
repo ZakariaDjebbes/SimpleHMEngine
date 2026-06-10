@@ -339,7 +339,7 @@ public abstract class Component : IEntity
     /// </summary>
     public void OnStart()
     {
-        Name = GenerateUniqueName();
+        Name ??= GenerateUniqueName();
         Start();
         _components.ForEach(c => c.OnStart());
     }
@@ -349,6 +349,8 @@ public abstract class Component : IEntity
     /// </summary>
     public void OnRender()
     {
+        if (!IsActive) return;
+        
         Render();
         _components.ForEach(c => c.OnRender());
     }
@@ -356,7 +358,7 @@ public abstract class Component : IEntity
     /// <summary>Recursively debug-renders this component and its children when debug mode is on.</summary>
     public void OnDebugRender()
     {
-        if (!GameContext.IsDebugMode) return;
+        if (!IsActive || !GameContext.IsDebugMode) return;
 
         _components.ForEach(c => c.OnDebugRender());
         DebugRender();
@@ -367,6 +369,8 @@ public abstract class Component : IEntity
     /// </summary>
     public void OnUpdate()
     {
+        if (!IsActive) return;
+
         Update();
         
         _components.ToList().ForEach(c => c.OnUpdate());
@@ -377,6 +381,8 @@ public abstract class Component : IEntity
     /// </summary>
     public void OnFixedUpdate()
     {
+        if (!IsActive) return;
+
         FixedUpdate();
         
         _components.ToList().ForEach(c => c.OnFixedUpdate());
@@ -417,13 +423,9 @@ public abstract class Component : IEntity
     protected void Destroy(Component component = null)
     {
         component ??= this;
-        
+
+        // OnClose already recurses into the whole subtree, so a single call cleans up every
         component.OnClose();
-        component._components.ToList().ForEach(c =>
-        {
-            c.OnClose();
-            Destroy(c);
-        });
         component.ClearComponents();
 
         if (component.Parent is null)
