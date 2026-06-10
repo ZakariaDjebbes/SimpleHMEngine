@@ -36,6 +36,68 @@ public class DrawOptions
     /// to 1.0 (fully opaque). If set to <c>null</c>, full opacity is used.
     /// </summary>
     public float? Opacity { get; set; }
+
+    /// <summary>
+    /// Creates options with only a fill color set, letting a <see cref="Color"/> be passed directly to a
+    /// drawing call — for example <c>Draw.Circle(center, radius, Color.Red)</c>.
+    /// </summary>
+    /// <param name="color">The fill color.</param>
+    public static implicit operator DrawOptions(Color color) => new() { FillColor = color };
+
+    /// <summary>Creates options with the given fill color, as the start of a fluent chain.</summary>
+    /// <param name="color">The fill color.</param>
+    /// <returns>A new <see cref="DrawOptions"/> instance.</returns>
+    public static DrawOptions Fill(Color color) => new() { FillColor = color };
+
+    /// <summary>Creates options with the given outline, as the start of a fluent chain.</summary>
+    /// <param name="color">The outline color.</param>
+    /// <param name="thickness">The outline thickness, in pixels.</param>
+    /// <returns>A new <see cref="DrawOptions"/> instance.</returns>
+    public static DrawOptions Outline(Color color, float thickness)
+        => new() { OutlineColor = color, OutlineThickness = thickness };
+
+    /// <summary>Creates options with the given rotation, as the start of a fluent chain.</summary>
+    /// <param name="degrees">The rotation angle, in degrees.</param>
+    /// <returns>A new <see cref="DrawOptions"/> instance.</returns>
+    public static DrawOptions Rotated(float degrees) => new() { Rotation = degrees };
+
+    /// <summary>Sets the fill color and returns this instance for chaining.</summary>
+    /// <param name="color">The fill color.</param>
+    /// <returns>This instance.</returns>
+    public DrawOptions WithFill(Color color)
+    {
+        FillColor = color;
+        return this;
+    }
+
+    /// <summary>Sets the outline color and thickness and returns this instance for chaining.</summary>
+    /// <param name="color">The outline color.</param>
+    /// <param name="thickness">The outline thickness, in pixels.</param>
+    /// <returns>This instance.</returns>
+    public DrawOptions WithOutline(Color color, float thickness)
+    {
+        OutlineColor = color;
+        OutlineThickness = thickness;
+        return this;
+    }
+
+    /// <summary>Sets the rotation and returns this instance for chaining.</summary>
+    /// <param name="degrees">The rotation angle, in degrees.</param>
+    /// <returns>This instance.</returns>
+    public DrawOptions WithRotation(float degrees)
+    {
+        Rotation = degrees;
+        return this;
+    }
+
+    /// <summary>Sets the opacity and returns this instance for chaining.</summary>
+    /// <param name="opacity">The opacity, from 0.0 (transparent) to 1.0 (opaque).</param>
+    /// <returns>This instance.</returns>
+    public DrawOptions WithOpacity(float opacity)
+    {
+        Opacity = opacity;
+        return this;
+    }
 }
 
 /// <summary>
@@ -52,4 +114,11 @@ public class TextDrawOptions : DrawOptions
     /// Gets or sets the default character size for rendering text, in pixels.
     /// </summary>
     public uint? CharacterSize { get; set; }
+
+    /// <summary>
+    /// Creates text options with only a fill color set, letting a <see cref="Color"/> be passed directly
+    /// to <c>Draw.Text</c>.
+    /// </summary>
+    /// <param name="color">The fill (text) color.</param>
+    public static implicit operator TextDrawOptions(Color color) => new() { FillColor = color };
 }
