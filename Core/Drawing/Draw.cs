@@ -1,12 +1,7 @@
-﻿using System.Numerics;
-using Core.Engine;
+﻿using Core.Engine;
 using Core.Resources;
 using SFML.Graphics;
 using SFML.System;
-using ZGeometry.Primitives.Circle;
-using ZGeometry.Primitives.Line;
-using ZGeometry.Primitives.Rectangle;
-using ZGeometry.Primitives.Triangle;
 
 namespace Core.Drawing;
 
@@ -17,10 +12,11 @@ public static class Draw
 {
     private static RenderWindow _window = GameContext.CurrentWindow;
 
-    private static readonly Dictionary<float, CircleShape> CircleCache = new();
-    private static readonly Dictionary<Vector2f, RectangleShape> RectangleCache = new();
+    private static readonly CircleShape CircleShape = new();
+    private static readonly RectangleShape RectangleShape = new();
     private static readonly ConvexShape TriangleShape = new(3);
-    private static readonly Dictionary<(Vector2f, Vector2f), VertexArray> LineCache = new();
+    private static readonly ConvexShape PolygonShape = new();
+    private static readonly VertexArray LineVertices = new(PrimitiveType.Lines, 2);
     private static readonly Text TextDrawable = new() { Font = EmbeddedResources.DefaultFont };
 
     /// <summary>
@@ -31,33 +27,11 @@ public static class Draw
     /// <param name="options">Optional drawing options.</param>
     public static void Circle(Vector2f center, float radius, DrawOptions options = null)
     {
-        if (!CircleCache.TryGetValue(radius, out var circle))
-        {
-            circle = new CircleShape(radius)
-            {
-                Origin = new Vector2f(radius, radius)
-            };
-            CircleCache[radius] = circle;
-        }
-
-        circle.Position = center;
-        ApplyDrawOptions(circle, options);
-        _window.Draw(circle);
-    }
-
-    /// <summary>
-    /// Draws a circle defined by a generic <see cref="Circle{T}"/> object.
-    /// </summary>
-    /// <typeparam name="T">The numeric type of the circle's properties.</typeparam>
-    /// <param name="circle">The circle to draw.</param>
-    /// <param name="options">Optional drawing options.</param>
-    public static void Circle<T>(Circle<T> circle, DrawOptions options = null)
-        where T : struct, INumber<T>
-    {
-        var x = float.CreateTruncating(circle.Center.X);
-        var y = float.CreateTruncating(circle.Center.Y);
-        var r = float.CreateTruncating(circle.Radius);
-        Circle(new Vector2f(x, y), r, options);
+        CircleShape.Radius = radius;
+        CircleShape.Origin = new Vector2f(radius, radius);
+        CircleShape.Position = center;
+        ApplyDrawOptions(CircleShape, options);
+        _window.Draw(CircleShape);
     }
 
     /// <summary>
@@ -70,34 +44,10 @@ public static class Draw
     /// <param name="options">Optional drawing options.</param>
     public static void Rectangle(float x, float y, float width, float height, DrawOptions options = null)
     {
-        var position = new Vector2f(x, y);
-        var size = new Vector2f(width, height);
-
-        if (!RectangleCache.TryGetValue(size, out var rectangle))
-        {
-            rectangle = new RectangleShape(size);
-            RectangleCache[size] = rectangle;
-        }
-
-        rectangle.Position = position;
-        ApplyDrawOptions(rectangle, options);
-        _window.Draw(rectangle);
-    }
-
-    /// <summary>
-    /// Draws a rectangle defined by a generic <see cref="Rectangle{T}"/> object.
-    /// </summary>
-    /// <typeparam name="T">The numeric type of the rectangle's properties.</typeparam>
-    /// <param name="rectangle">The rectangle to draw.</param>
-    /// <param name="options">Optional drawing options.</param>
-    public static void Rectangle<T>(Rectangle<T> rectangle, DrawOptions options = null)
-        where T : struct, INumber<T>
-    {
-        var x = float.CreateTruncating(rectangle.Position.X);
-        var y = float.CreateTruncating(rectangle.Position.Y);
-        var width = float.CreateTruncating(rectangle.Size.X);
-        var height = float.CreateTruncating(rectangle.Size.Y);
-        Rectangle(x, y, width, height, options);
+        RectangleShape.Size = new Vector2f(width, height);
+        RectangleShape.Position = new Vector2f(x, y);
+        ApplyDrawOptions(RectangleShape, options);
+        _window.Draw(RectangleShape);
     }
 
     /// <summary>
@@ -118,22 +68,22 @@ public static class Draw
     }
 
     /// <summary>
-    /// Draws a triangle defined by a generic <see cref="Triangle{T}"/> object.
+    /// Draws a filled convex polygon through the given points, in order.
+    /// The points must describe a convex shape; concave outlines will render incorrectly.
     /// </summary>
-    /// <typeparam name="T">The numeric type of the triangle's properties.</typeparam>
-    /// <param name="triangle">The triangle to draw.</param>
+    /// <param name="points">The polygon's vertices, in winding order. At least three are required.</param>
     /// <param name="options">Optional drawing options.</param>
-    public static void Triangle<T>(Triangle<T> triangle, DrawOptions options = null)
-        where T : struct, INumber<T>
+    public static void ConvexPolygon(IReadOnlyList<Vector2f> points, DrawOptions options = null)
     {
-        var x1 = float.CreateTruncating(triangle.Position[0].X);
-        var y1 = float.CreateTruncating(triangle.Position[0].Y);
-        var x2 = float.CreateTruncating(triangle.Position[1].X);
-        var y2 = float.CreateTruncating(triangle.Position[1].Y);
-        var x3 = float.CreateTruncating(triangle.Position[2].X);
-        var y3 = float.CreateTruncating(triangle.Position[2].Y);
+        if (points.Count < 3)
+            throw new ArgumentException("A convex polygon needs at least three points.", nameof(points));
 
-        Triangle(new Vector2f(x1, y1), new Vector2f(x2, y2), new Vector2f(x3, y3), options);
+        PolygonShape.SetPointCount((uint)points.Count);
+        for (uint i = 0; i < points.Count; i++)
+            PolygonShape.SetPoint(i, points[(int)i]);
+
+        ApplyDrawOptions(PolygonShape, options);
+        _window.Draw(PolygonShape);
     }
 
 
@@ -145,40 +95,40 @@ public static class Draw
     /// <param name="options">Optional drawing options.</param>
     public static void Line(Vector2f start, Vector2f end, DrawOptions options = null)
     {
-        var key = (start, end);
-
-        if (!LineCache.TryGetValue(key, out var line))
-        {
-            line = new VertexArray(PrimitiveType.Lines, 2)
-            {
-                [0] = new Vertex(start),
-                [1] = new Vertex(end)
-            };
-
-            LineCache[key] = line;
-        }
-
         var color = options?.FillColor ?? Color.White;
-        line[0] = new Vertex(start, color);
-        line[1] = new Vertex(end, color);
-
-        _window.Draw(line);
+        LineVertices[0] = new Vertex(start, color);
+        LineVertices[1] = new Vertex(end, color);
+        _window.Draw(LineVertices);
     }
 
     /// <summary>
-    /// Draws a line defined by a generic <see cref="Line{T}"/> object.
+    /// Draws a prebuilt vertex array directly. The caller owns the array, making this the right
+    /// entry point for static geometry (curves, grids, meshes) that is built once and drawn each frame.
     /// </summary>
-    /// <typeparam name="T">The numeric type of the line's properties.</typeparam>
-    /// <param name="line">The line to draw.</param>
-    /// <param name="options">Optional drawing options.</param>
-    public static void Line<T>(Line<T> line, DrawOptions options = null)
-        where T : struct, INumber<T>
+    /// <param name="vertices">The vertex array to draw.</param>
+    public static void Vertices(VertexArray vertices) => _window.Draw(vertices);
+
+    /// <summary>
+    /// Draws a connected polyline through the given points.
+    /// </summary>
+    /// <param name="points">The points to connect, in order.</param>
+    /// <param name="options">Optional drawing options. <c>FillColor</c> sets the line color.</param>
+    /// <param name="closed">When <c>true</c>, connects the last point back to the first.</param>
+    public static void Polyline(IReadOnlyList<Vector2f> points, DrawOptions options = null, bool closed = false)
     {
-        var x1 = float.CreateTruncating(line.Start.X);
-        var y1 = float.CreateTruncating(line.Start.Y);
-        var x2 = float.CreateTruncating(line.End.X);
-        var y2 = float.CreateTruncating(line.End.Y);
-        Line(new Vector2f(x1, y1), new Vector2f(x2, y2), options);
+        if (points.Count < 2)
+            return;
+
+        var color = options?.FillColor ?? Color.White;
+        var count = (uint)(points.Count + (closed ? 1 : 0));
+        var strip = new VertexArray(PrimitiveType.LineStrip, count);
+
+        for (uint i = 0; i < points.Count; i++)
+            strip[i] = new Vertex(points[(int)i], color);
+        if (closed)
+            strip[(uint)points.Count] = new Vertex(points[0], color);
+
+        _window.Draw(strip);
     }
 
     /// <summary>
@@ -217,55 +167,38 @@ public static class Draw
                     ? EmbeddedResources.DefaultFont
                     : ResourceManager<Font>.GetResource(textOptions.FontPath);
                 text.CharacterSize = textOptions.CharacterSize ?? 16;
-                ApplyCommon(
-                    fill: c => text.FillColor = c,
-                    outline: c => text.OutlineColor = c,
-                    thickness: v => text.OutlineThickness = v,
-                    rotation: v => text.Rotation = v,
-                    getFill: () => text.FillColor,
-                    setFill: c => text.FillColor = c,
-                    options);
+
+                if (options.OutlineColor is { } textOutline)
+                    text.OutlineColor = textOutline;
+                if (options.OutlineThickness is { } textThickness)
+                    text.OutlineThickness = textThickness;
+                if (options.Rotation is { } textRotation)
+                    text.Rotation = textRotation;
+                text.FillColor = ResolveFill(text.FillColor, options);
                 break;
 
             case Shape shape:
-                ApplyCommon(
-                    fill: c => shape.FillColor = c,
-                    outline: c => shape.OutlineColor = c,
-                    thickness: v => shape.OutlineThickness = v,
-                    rotation: v => shape.Rotation = v,
-                    getFill: () => shape.FillColor,
-                    setFill: c => shape.FillColor = c,
-                    options);
+                if (options.OutlineColor is { } shapeOutline)
+                    shape.OutlineColor = shapeOutline;
+                if (options.OutlineThickness is { } shapeThickness)
+                    shape.OutlineThickness = shapeThickness;
+                if (options.Rotation is { } shapeRotation)
+                    shape.Rotation = shapeRotation;
+                shape.FillColor = ResolveFill(shape.FillColor, options);
                 break;
         }
     }
 
-    private static void ApplyCommon(
-        Action<Color> fill,
-        Action<Color> outline,
-        Action<float> thickness,
-        Action<float> rotation,
-        Func<Color> getFill,
-        Action<Color> setFill,
-        DrawOptions options)
+    /// <summary>
+    /// Resolves the fill color from the options, falling back to the drawable's current fill, then
+    /// applies opacity to that resolved color. Opacity therefore modifies the requested fill rather
+    /// than whatever color a previous draw left on a shared instance.
+    /// </summary>
+    private static Color ResolveFill(Color current, DrawOptions options)
     {
-        if (options.FillColor is { } fillColor)
-            fill(fillColor);
-
-        if (options.OutlineColor is { } outlineColor)
-            outline(outlineColor);
-
-        if (options.OutlineThickness is { } outlineThickness)
-            thickness(outlineThickness);
-
-        if (options.Rotation is { } rot)
-            rotation(rot);
-
+        var color = options.FillColor ?? current;
         if (options.Opacity is { } opacity)
-        {
-            var color = getFill();
             color.A = (byte)(opacity * 255);
-            setFill(color);
-        }
+        return color;
     }
 }

@@ -10,7 +10,7 @@
     <!-- NuGet package metadata -->
     <PropertyGroup>
         <PackageId>SimpleHMEngine</PackageId>
-        <Version>0.2.1</Version>
+        <Version>0.2.3</Version>
         <Authors>Zakaria Djebbes</Authors>
         <Company>Zakaria Djebbes</Company>
         <Product>SimpleHMEngine</Product>
@@ -22,7 +22,7 @@
         <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>0.2.1: Fixed crashes in the embedded default-font loader by pinning the font bytes for the process lifetime — resolves both a random access violation (0xC0000005) and a "callback on a garbage collected delegate" crash when rendering text. (Supersedes the incomplete 0.2.1 fix.)</PackageReleaseNotes>
+        <PackageReleaseNotes>0.2.3: Draw API cleanup and additions. Added Draw.Vertices, Draw.Polyline and Draw.ConvexPolygon for drawing prebuilt VertexArrays, polylines and convex polygons. Replaced the per-radius/per-size shape caches in Draw with single shared shape instances, removing an unbounded-growth memory leak on animated shapes. Removed the redundant generic Draw.Circle/Rectangle/Triangle/Line&lt;T&gt; overloads; FluentDraw.DrawSelf is now the single adapter from ZGeometry primitives to Draw. Reworked DrawOptions application to avoid per-call delegate allocations and fixed Opacity being applied to a stale fill color. Fixed several Component lifecycle bugs: OnStart no longer overwrites a manually-set Name, Destroy no longer calls OnClose multiple times on nested children, and IsActive is now respected for Update/FixedUpdate/Render/DebugRender at every level of the component tree.</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
