@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Reflection;
-using Core.Extensions;
+﻿using Core.Extensions;
 
 namespace Core.Entity;
 
@@ -40,69 +38,27 @@ public abstract class Scene : IEntity
     protected Scene() => Name = GetType().Name;
 
     /// <summary>
-    /// Gets or sets the current active scene.
-    /// When setting a new scene, the previous scene is properly closed and the new scene is initialized.
+    /// Gets the current active scene. The engine guarantees this is never <c>null</c>: before the first
+    /// real scene is loaded it returns a transient placeholder, so components can be buffered safely.
+    /// Change scenes through <see cref="SceneManager.SwitchScene{T}"/>; assignment is engine-internal,
+    /// because loading a scene performs teardown, component discovery and start-up.
     /// </summary>
     public static Scene Current
     {
-        get
-        {
-            _currentScene ??= new PendingScene();
-            return _currentScene;
-        }
-        set
-        {
-            if (_currentScene is PendingScene)
-            {
-                _currentScene._sceneComponents.ForEach(value.AddComponent);
-                _currentScene._sceneComponents.Clear();
-            }
-
-            _currentScene?.OnClose();
-            _currentScene = value;
-
-            _currentScene
-                .AddComponents(GetAllComponentsInFields(_currentScene)
-                .Where(component => component != null)
-                .ToArray());
-
-            _currentScene.OnStart();
-            _currentScene.StartAll();
-        }
+        get => _currentScene ??= new PendingScene();
+        internal set => _currentScene = value;
     }
 
-    private static IEnumerable<Component> GetAllComponentsInFields(object obj)
+    /// <summary>
+    /// Removes every component from this scene and returns them without closing them. Used by the scene
+    /// manager to carry components buffered on the bootstrap placeholder into the first real scene.
+    /// </summary>
+    /// <returns>The components that were attached to this scene.</returns>
+    internal Component[] DetachComponents()
     {
-        if (obj == null)
-            yield break;
-
-        var fields = obj
-            .GetType()
-            .GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-
-        foreach (var field in fields)
-        {
-            var value = field.GetValue(obj);
-            switch (value)
-            {
-                case null: continue;
-                case Component component:
-                    yield return component;
-                    break;
-                case IEnumerable enumerable and not string:
-                    foreach (var item in enumerable)
-                        if (item is Component innerComponent) yield return innerComponent;
-                        else if (item?.GetType() is { IsPrimitive: false, IsEnum: false } && item.GetType() != typeof(string))
-                            foreach (var deeperComponent in GetAllComponentsInFields(item))
-                                yield return deeperComponent;
-                    break;
-                default:
-                    if (field.FieldType is { IsPrimitive: false, IsEnum: false } && field.FieldType != typeof(string))
-                        foreach (var innerComponent in GetAllComponentsInFields(value))
-                            yield return innerComponent;
-                    break;
-            }
-        }
+        var detached = _sceneComponents.ToArray();
+        _sceneComponents.Clear();
+        return detached;
     }
 
     /// <summary>

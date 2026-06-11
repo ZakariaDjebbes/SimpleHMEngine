@@ -150,54 +150,58 @@ public static class Draw
     }
 
     /// <summary>
+    /// Clears the drawing window to a solid color, erasing the previous frame. Call this once at the
+    /// start of rendering. Unlike clearing through <see cref="GameContext"/>, this targets the same
+    /// window <see cref="Draw"/> renders to the drawing window has been
+    /// redirected via <see cref="SetDrawingWindow"/>.
+    /// </summary>
+    /// <param name="color">The color to fill the window with. Defaults to <see cref="Color.Black"/>.</param>
+    public static void Clear(Color? color = null) => _window.Clear(color ?? Color.Black);
+
+    /// <summary>
     /// Sets the current rendering window.
     /// </summary>
     /// <param name="window">The rendering window to use.</param>
     public static void SetDrawingWindow(RenderWindow window) => _window = window;
 
+    // The shape/text instances are shared and reused across every draw, so each call must fully
+    // restate the styling it wants. Properties are assigned unconditionally with explicit fallbacks
+    // (never left untouched), otherwise a draw would silently inherit rotation/outline/fill left
+    // behind by a previous draw on the same instance. This is also why null options still resets.
     private static void ApplyDrawOptions(Drawable drawable, DrawOptions options)
     {
-        if (options is null)
-            return;
-
         switch (drawable)
         {
-            case Text text when options is TextDrawOptions textOptions:
-                text.Font = textOptions.FontPath is null
+            case Text text:
+                var textOptions = options as TextDrawOptions;
+                text.Font = textOptions?.FontPath is null
                     ? EmbeddedResources.DefaultFont
                     : ResourceManager<Font>.GetResource(textOptions.FontPath);
-                text.CharacterSize = textOptions.CharacterSize ?? 16;
-
-                if (options.OutlineColor is { } textOutline)
-                    text.OutlineColor = textOutline;
-                if (options.OutlineThickness is { } textThickness)
-                    text.OutlineThickness = textThickness;
-                if (options.Rotation is { } textRotation)
-                    text.Rotation = textRotation;
-                text.FillColor = ResolveFill(text.FillColor, options);
+                text.CharacterSize = textOptions?.CharacterSize ?? 16;
+                text.OutlineColor = options?.OutlineColor ?? Color.Transparent;
+                text.OutlineThickness = options?.OutlineThickness ?? 0f;
+                text.Rotation = options?.Rotation ?? 0f;
+                text.FillColor = ResolveFill(options);
                 break;
 
             case Shape shape:
-                if (options.OutlineColor is { } shapeOutline)
-                    shape.OutlineColor = shapeOutline;
-                if (options.OutlineThickness is { } shapeThickness)
-                    shape.OutlineThickness = shapeThickness;
-                if (options.Rotation is { } shapeRotation)
-                    shape.Rotation = shapeRotation;
-                shape.FillColor = ResolveFill(shape.FillColor, options);
+                shape.OutlineColor = options?.OutlineColor ?? Color.Transparent;
+                shape.OutlineThickness = options?.OutlineThickness ?? 0f;
+                shape.Rotation = options?.Rotation ?? 0f;
+                shape.FillColor = ResolveFill(options);
                 break;
         }
     }
 
     /// <summary>
-    /// Resolves the fill color from the options, falling back to the drawable's current fill, then
+    /// Resolves the fill color from the options, defaulting to white when none is given, then
     /// applies opacity to that resolved color. Opacity therefore modifies the requested fill rather
     /// than whatever color a previous draw left on a shared instance.
     /// </summary>
-    private static Color ResolveFill(Color current, DrawOptions options)
+    private static Color ResolveFill(DrawOptions options)
     {
-        var color = options.FillColor ?? current;
-        if (options.Opacity is { } opacity)
+        var color = options?.FillColor ?? Color.White;
+        if (options?.Opacity is { } opacity)
             color.A = (byte)(opacity * 255);
         return color;
     }

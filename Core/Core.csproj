@@ -10,7 +10,7 @@
     <!-- NuGet package metadata -->
     <PropertyGroup>
         <PackageId>SimpleHMEngine</PackageId>
-        <Version>0.2.3</Version>
+        <Version>0.3.0</Version>
         <Authors>Zakaria Djebbes</Authors>
         <Company>Zakaria Djebbes</Company>
         <Product>SimpleHMEngine</Product>
@@ -22,7 +22,7 @@
         <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>0.2.3: Draw API cleanup and additions. Added Draw.Vertices, Draw.Polyline and Draw.ConvexPolygon for drawing prebuilt VertexArrays, polylines and convex polygons. Replaced the per-radius/per-size shape caches in Draw with single shared shape instances, removing an unbounded-growth memory leak on animated shapes. Removed the redundant generic Draw.Circle/Rectangle/Triangle/Line&lt;T&gt; overloads; FluentDraw.DrawSelf is now the single adapter from ZGeometry primitives to Draw. Reworked DrawOptions application to avoid per-call delegate allocations and fixed Opacity being applied to a stale fill color. Fixed several Component lifecycle bugs: OnStart no longer overwrites a manually-set Name, Destroy no longer calls OnClose multiple times on nested children, and IsActive is now respected for Update/FixedUpdate/Render/DebugRender at every level of the component tree.</PackageReleaseNotes>
+        <PackageReleaseNotes>0.3.0: Scene, persistence and input overhaul (contains breaking changes). Scene switching is now destructive and centralized in SceneManager.Load: the current scene is torn down and the next built fresh, removing the double/triple OnClose and the surprising side-effecting Scene.Current setter (Scene.Current is now a plain property). Added cross-scene persistence via the [Persistent] field attribute (one shared instance per component type, started once, spared from teardown, with field write-back), reachable through SceneManager.GetPersistentComponent&lt;T&gt;(). Added the [Detached] field attribute to opt a component field out of automatic discovery, and a cycle guard to the field scan. Input bindings are now two-tier: BindAction is scene-scoped and cleared on every switch, while the new BindGlobalAction overloads survive switches; InvokeActions iterates a snapshot so a binding that switches scenes can no longer corrupt the enumeration. BREAKING: removed the unused SceneManager scene registry APIs (RemoveScene, GetScene, GetRequiredScene, GetAllScenes). Also fixes Draw shared shapes inheriting rotation/outline/fill from a previous draw (options are now applied unconditionally with explicit fallbacks). Drawing ergonomics: added Draw.Clear(color) which clears the window Draw actually renders to (correct under SetDrawingWindow redirects), an implicit Color-to-DrawOptions/TextDrawOptions conversion so a color can be passed straight to a draw call, and a fluent DrawOptions builder (DrawOptions.Fill/Outline/Rotated plus WithFill/WithOutline/WithRotation/WithOpacity).</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
