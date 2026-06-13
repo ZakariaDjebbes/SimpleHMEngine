@@ -1,4 +1,5 @@
 using Core.Drawing;
+using Core.Drawing.DrawOption;
 using Core.Drawing.UserInterface;
 using Core.Engine;
 using Core.Entity;

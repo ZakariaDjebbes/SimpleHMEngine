@@ -1,4 +1,5 @@
 ﻿using Core.Drawing;
+using Core.Drawing.DrawOption;
 using SFML.System;
 using ZGeometry.Logic;
 using ZGeometry.Primitives.Point;

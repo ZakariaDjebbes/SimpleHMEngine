@@ -68,6 +68,6 @@ public class UiButton : UiElement
 
         var color = IsHeld ? PressedColor : IsHovered ? HoverColor : NormalColor;
         Draw.Rectangle(Position.X, Position.Y, Size.X, Size.Y,
-            new DrawOptions { FillColor = color, OutlineColor = OutlineColor, OutlineThickness = 2 });
+            new DrawOption.DrawOptions { FillColor = color, OutlineColor = OutlineColor, OutlineThickness = 2 });
     }
 }

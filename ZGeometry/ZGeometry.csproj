@@ -10,7 +10,7 @@
     <!-- NuGet package metadata -->
     <PropertyGroup>
         <PackageId>ZGeometry</PackageId>
-        <Version>0.2.1</Version>
+        <Version>0.2.2</Version>
         <Authors>Zakaria Djebbes</Authors>
         <Company>Zakaria Djebbes</Company>
         <Product>ZGeometry</Product>
@@ -22,7 +22,7 @@
         <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>0.2.1: Packaged README and standard NuGet metadata; published as a standalone package.</PackageReleaseNotes>
+        <PackageReleaseNotes>0.2.2: Circle intersection correctness fixes. The segment-versus-circle intersection now computes crossings from the true perpendicular foot instead of clamping to the segment first, so the points no longer drift off the circle near segment ends, and it keeps crossings by their segment parameter instead of re-testing collinearity with a tolerance that was discarding valid float-rounded points. Triangle-versus-circle and rectangle-versus-circle intersections no longer report interior vertices or corners as intersection points (a vertex inside the circle is containment, not a boundary crossing). Triangle-versus-circle overlap is now decided independently, from the centre-inside test plus per-edge distance, so it stays correct without depending on the intersection-point set.</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>

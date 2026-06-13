@@ -1,5 +1,6 @@
 using Core.Collider;
 using Core.Drawing;
+using Core.Drawing.DrawOption;
 using Core.Engine;
 using Core.Entity;
 using SFML.System;

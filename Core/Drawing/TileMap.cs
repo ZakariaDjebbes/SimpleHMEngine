@@ -95,7 +95,7 @@ public class TileMap(Vector2D<int> tileSize, string texture = TileMap.DefaultTex
             var rect = new Rectangle<float>(
                 (Position.X + tile.X * size.X, Position.Y + tile.Y * size.Y),
                 (size.X, size.Y));
-            rect.DrawSelf(new DrawOptions { FillColor = Color.Transparent, OutlineColor = Color.Green, OutlineThickness = 1 });
+            rect.DrawSelf(new DrawOption.DrawOptions { FillColor = Color.Transparent, OutlineColor = Color.Green, OutlineThickness = 1 });
         }
     }
 }
