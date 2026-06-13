@@ -11,7 +11,7 @@ internal class PendingScene : Scene;
 /// Base class for all scenes in the game engine.
 /// A scene represents a collection of components that make up a game level or menu.
 /// </summary>
-public abstract class Scene : IEntity
+public abstract class Scene
 {
     private readonly List<Component> _sceneComponents = [];
     private static Scene _currentScene;
