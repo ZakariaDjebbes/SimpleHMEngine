@@ -7,7 +7,7 @@ namespace Core.Entity;
 /// Base class for all components in the game engine.
 /// Components are the building blocks of entities and can be attached to other components to form a hierarchy.
 /// </summary>
-public abstract class Component : IEntity
+public abstract class Component
 {
     private static int _unnamedCounter;
     private readonly List<Component> _components = [];
