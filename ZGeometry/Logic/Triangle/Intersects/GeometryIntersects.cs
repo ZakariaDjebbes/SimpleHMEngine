@@ -81,27 +81,14 @@ public static partial class Geometry
     public static IEnumerable<Vector2D<T1>> Intersects<T1>(Triangle<T1> triangle, Circle<T1> circle)
         where T1 : struct, INumber<T1>
     {
+        // Only true boundary crossings, where a side meets the circle's circumference. A vertex that
+        // sits inside the circle is containment, not a boundary intersection, so it is not added here
+        // (that would place a "point" off the circle). Overlap is decided separately in Overlaps.
         var intersections = new HashSet<Vector2D<T1>>();
 
-        // Check intersections with each side of the triangle
         for (var i = 0; i < Triangle<T1>.SideCount; i++)
-        {
-            var side = triangle.Side(i);
-            var sideIntersections = Intersects(side, circle);
-            foreach (var point in sideIntersections)
-            {
+            foreach (var point in Intersects(triangle.Side(i), circle))
                 intersections.Add(point);
-            }
-        }
-
-        // Check if any vertex of the triangle is inside the circle
-        foreach (var vertex in triangle.Position)
-        {
-            if (Contains(circle, vertex))
-            {
-                intersections.Add(vertex);
-            }
-        }
 
         return intersections;
     }

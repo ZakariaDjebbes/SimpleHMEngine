@@ -58,35 +58,15 @@ public static partial class Geometry
     public static IEnumerable<Vector2D<T1>> Intersects<T1>(Rectangle<T1> rectangle, Circle<T1> circle)
         where T1 : struct, INumber<T1>
     {
+        // Only true boundary crossings, where an edge meets the circle's circumference. A corner that
+        // sits inside the circle is containment, not a boundary intersection, so it is not added here
+        // (that would place a "point" inside the circle, away from its edge). Overlap is decided
+        // separately in Overlaps via the closest-point-to-circle test.
         var intersections = new HashSet<Vector2D<T1>>();
 
-        // Check intersections with each side of the rectangle
         for (var i = 0; i < rectangle.SideCount; i++)
-        {
-            var side = rectangle.Side(i);
-            var sideIntersections = Intersects(side, circle);
-            foreach (var point in sideIntersections)
-            {
+            foreach (var point in Intersects(rectangle.Side(i), circle))
                 intersections.Add(point);
-            }
-        }
-
-        // Check if any corner of the rectangle is inside the circle
-        var corners = new[]
-        {
-            rectangle.Position,
-            rectangle.Position + Vector2D<T1>.Create(rectangle.Size.X, T1.Zero),
-            rectangle.Position + rectangle.Size,
-            rectangle.Position + Vector2D<T1>.Create(T1.Zero, rectangle.Size.Y)
-        };
-
-        foreach (var corner in corners)
-        {
-            if (circle.Contains(corner))
-            {
-                intersections.Add(corner);
-            }
-        }
 
         return intersections;
     }

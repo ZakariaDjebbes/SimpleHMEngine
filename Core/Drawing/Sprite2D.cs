@@ -7,17 +7,54 @@ using SFML.System;
 namespace Core.Drawing;
 
 /// <summary>
-/// Draws a single textured sprite. Each instance owns its own <see cref="Sprite"/> so multiple
+/// Draws a single textured sprite. Each instance owns its own <see cref="SFML.Graphics.Sprite"/> so multiple
 /// sprites can share a texture while having independent positions, colors and sub-rectangles.
 /// </summary>
-public class Sprite2D(string texture = Sprite2D.DefaultTexture) : Component
+public class Sprite2D : Component
 {
-    private const string DefaultTexture = "Resources/Sprites/default.png";
+    /// <summary>
+    /// Creates a <see cref="Sprite2D"/> using the incoming texture.
+    /// </summary>
+    /// <param name="texture">
+    /// The texture to use for the sprite. The caller is responsible for ensuring this texture remains valid for the lifetime of the sprite.
+    /// </param>
+    public Sprite2D(Texture texture)
+    {
+        Sprite = new Sprite(texture);
+    }
 
-    private Sprite _sprite;
+    /// <summary>
+    /// Creates a <see cref="Sprite2D"/> by loading the texture from the given path.
+    /// </summary>
+    /// <param name="texturePath">
+    ///  The path to the texture resource. The texture is loaded and cached by the
+    ///  <see cref="ResourceManager{T}"/>; the cached instance is shared, not copied, so many sprites
+    ///  drawing the same path reference one GPU texture.
+    /// </param>
+    public Sprite2D(string texturePath)
+    {
+        TexturePath = texturePath;
+        Sprite = new Sprite(ResourceManager<Texture>.GetResource(texturePath));
+    }
 
-    /// <summary>Path to the texture this sprite draws.</summary>
-    public string Texture { get; set; } = texture;
+    /// <summary>
+    /// Creates a <see cref="Sprite2D"/> with a default texture. This can be used as a placeholder when the actual texture is not yet known or available.
+    /// </summary>
+    public Sprite2D()
+    {
+        var texture = EmbeddedResources.DefaultTexture;
+        Sprite = new Sprite(texture);
+    }
+
+    /// <summary>The underlying SFML sprite this component draws. Fixed at construction.</summary>
+    public Sprite Sprite { get; private init; }
+
+    /// <summary>
+    /// Path the texture was loaded from, or <c>null</c> when the sprite was constructed from a
+    /// <see cref="SFML.Graphics.Texture"/> directly or uses the default texture. The texture is fixed
+    /// at construction, so this is informational only.
+    /// </summary>
+    public string TexturePath { get; private init; }
 
     /// <summary>Scale applied to the sprite on each axis.</summary>
     public Vector2f Scale { get; set; } = new(1, 1);
@@ -45,24 +82,23 @@ public class Sprite2D(string texture = Sprite2D.DefaultTexture) : Component
     /// <summary>Loads the texture and applies the optional sub-rectangle.</summary>
     protected override void Start()
     {
-        _sprite = new Sprite(ResourceManager<Texture>.GetResource(Texture));
         if (TextureRect.HasValue)
-            _sprite.TextureRect = TextureRect.Value;
+            Sprite.TextureRect = TextureRect.Value;
     }
 
     /// <summary>Draws the sprite with the current transform and color.</summary>
     protected override void Render()
     {
-        if (!Visible || _sprite is null) return;
+        if (!Visible || Sprite is null) return;
 
-        _sprite.Position = Position;
-        _sprite.Color = Color;
-        _sprite.Rotation = Rotation;
-        _sprite.Scale = Scale;
+        Sprite.Position = Position;
+        Sprite.Color = Color;
+        Sprite.Rotation = Rotation;
+        Sprite.Scale = Scale;
 
-        var rect = _sprite.TextureRect;
+        var rect = Sprite.TextureRect;
         Size = new Vector2f(rect.Width * Scale.X, rect.Height * Scale.Y);
 
-        GameContext.CurrentWindow.Draw(_sprite);
+        GameContext.CurrentWindow.Draw(Sprite);
     }
 }

@@ -1,4 +1,5 @@
 using Core.Drawing;
+using Core.Drawing.DrawOption;
 using Core.Drawing.UserInterface;
 using Core.Entity;
 using Core.Input;
@@ -16,28 +17,41 @@ using ZGeometry.Primitives.Triangle;
 namespace Demo.Scenes;
 
 /// <summary>
-/// Showcases the ZGeometry library: a mouse-controlled probe circle tested against a rectangle,
-/// triangle, circle and line via Overlaps / Contains / Intersects. Shapes glow on overlap, turn
-/// white when fully contained, and boundary intersection points are plotted live.
+/// Showcases the ZGeometry library: a mouse-controlled probe tested against a rectangle, triangle,
+/// circle and line via Overlaps / Contains / Intersects. The probe shape (circle, rectangle or
+/// triangle) and its size are chosen from the UI. Shapes glow on overlap, turn white when fully
+/// contained, and boundary intersection points are plotted live.
 /// </summary>
 public class GeometryDemo : Scene
 {
+    private enum ProbeShape { Circle, Rectangle, Triangle }
+
     private static readonly Color IdleOutline = Palette.LightAqua;
     private static readonly Color OverlapFill = new(220, 90, 90, 110);
     private static readonly Color OverlapOutline = Palette.LightRed;
     private static readonly Color ContainFill = new(120, 220, 120, 140);
     private static readonly Color HitColor = Palette.DeepRed;
+    private static readonly Color ContainOutline = Palette.DarkRed;
+
+    private static readonly DrawOptions ProbeStyle = new()
+    {
+        FillColor = new Color(255, 255, 255, 25), OutlineColor = Color.White, OutlineThickness = 2
+    };
 
     private readonly Rectangle<float> _rectangle = Rectangle<float>.Create((140, 150), (190, 130));
     private readonly Triangle<float> _triangle = Triangle<float>.Create((470, 150), (390, 300), (590, 300));
     private readonly Circle<float> _circle = Circle<float>.Create((760, 230), 70);
     private readonly Line<float> _line = Line<float>.Create((900, 140), (900, 360));
 
-    private float _probeRadius = 45.0f;
-    private Circle<float> _probe;
+    private ProbeShape _shape = ProbeShape.Circle;
+    private float _probeSize = 45.0f;
+
     private readonly List<Vector2D<float>> _hits = [];
+    private bool[] _overlap = new bool[4];
+    private bool[] _contain = new bool[4];
     private int _overlaps;
     private int _contained;
+    private Action _drawProbe;
 
     private readonly UiCanvas _canvas = new();
 
@@ -47,7 +61,7 @@ public class GeometryDemo : Scene
 
         var panel = new UiStackPanel { Spacing = 6, Alignment = ItemAlignment.Start };
         panel.Add(new UiText { Content = "Geometry & ZGeometry", CharacterSize = 24, Color = UiTheme.Accent });
-        panel.Add(new UiText { Content = "Move the mouse to drag the probe. Scroll to resize. Esc = menu.", CharacterSize = 15 });
+        panel.Add(new UiText { Content = "Move the mouse to drag the probe. Esc = menu.", CharacterSize = 15 });
         panel.Add(new UiText
         {
             CharacterSize = 15,
@@ -55,47 +69,103 @@ public class GeometryDemo : Scene
             ContentProvider = () => $"Overlapping {_overlaps}/4    Contained {_contained}/4    Intersections {_hits.Count}"
         });
 
-        var card = new UiCard { Anchor = Anchor.TopLeft, Margin = new Vector2f(12, 12), Padding = new Vector2f(12, 10) };
+        panel.Add(new UiText { CharacterSize = 15, ContentProvider = () => $"Probe shape: {_shape}" });
+        var shapeButton = new UiButton { Size = new Vector2f(240, 40), Label = "Cycle shape" };
+        shapeButton.Clicked += () => _shape = Next(_shape);
+        panel.Add(shapeButton);
+
+        panel.Add(new UiText { CharacterSize = 15, ContentProvider = () => $"Probe size: {_probeSize:0}" });
+        var sizeSlider = new UiSlider { Min = 10, Max = 260, Size = new Vector2f(240, 24) };
+        sizeSlider.ValueChanged += v => _probeSize = v;
+        sizeSlider.SetValue(_probeSize);
+        panel.Add(sizeSlider);
+        
+        var card = new UiCard { Anchor = Anchor.TopLeft, Margin = new Vector2f(200, 500), Padding = new Vector2f(12, 10) };
         card.SetContent(panel);
         _canvas.Add(card);
-
-        InputManager.BindAction(Keyboard.Key.Up, ActionType.Held, () => _probeRadius = MathF.Min(_probeRadius + 1.5f, 200));
-        InputManager.BindAction(Keyboard.Key.Down, ActionType.Held, () => _probeRadius = MathF.Max(_probeRadius - 1.5f, 10));
     }
 
     public override void OnUpdate()
     {
-        var mouse = MouseUtils.GetCurrentViewMousePosition();
-        _probe = Circle<float>.Create((mouse.X, mouse.Y), _probeRadius);
+        var m = MouseUtils.GetCurrentViewMousePosition();
 
-        _hits.Clear();
-        _hits.AddRange(_probe.Intersects(_rectangle));
-        _hits.AddRange(_probe.Intersects(_triangle));
-        _hits.AddRange(_probe.Intersects(_circle));
-        _hits.AddRange(_probe.Intersects(_line));
-
-        _overlaps = Count(_probe.Overlaps(_rectangle), _probe.Overlaps(_triangle), _probe.Overlaps(_circle), _probe.Overlaps(_line));
-        _contained = Count(_probe.Contains(_rectangle), _probe.Contains(_triangle), _probe.Contains(_circle), _probe.Contains(_line));
+        switch (_shape)
+        {
+            case ProbeShape.Rectangle:
+                Evaluate(Rectangle<float>.Create((m.X - _probeSize, m.Y - _probeSize), (2 * _probeSize, 2 * _probeSize)));
+                break;
+            case ProbeShape.Triangle:
+                Evaluate(Triangle<float>.Create( (m.X, m.Y - _probeSize), (m.X - _probeSize, m.Y + _probeSize), (m.X + _probeSize, m.Y + _probeSize)));
+                break;
+            default:
+                Evaluate(Circle<float>.Create((m.X, m.Y), _probeSize));
+                break;
+        }
     }
 
     public override void OnRender()
     {
-        _rectangle.DrawSelf(StyleFor(_probe.Overlaps(_rectangle), _probe.Contains(_rectangle)));
-        _triangle.DrawSelf(StyleFor(_probe.Overlaps(_triangle), _probe.Contains(_triangle)));
-        _circle.DrawSelf(StyleFor(_probe.Overlaps(_circle), _probe.Contains(_circle)));
-        _line.DrawSelf(new DrawOptions { FillColor = LineColor(_probe.Overlaps(_line), _probe.Contains(_line)) });
+        _rectangle.DrawSelf(StyleFor(_overlap[0], _contain[0]));
+        _triangle.DrawSelf(StyleFor(_overlap[1], _contain[1]));
+        _circle.DrawSelf(StyleFor(_overlap[2], _contain[2]));
+        _line.DrawSelf(new DrawOptions { FillColor = LineColor(_overlap[3], _contain[3]) });
 
-        Draw.Circle(new Vector2f(_probe.Center.X, _probe.Center.Y), _probeRadius,
-            new DrawOptions { FillColor = new Color(255, 255, 255, 25), OutlineColor = Color.White, OutlineThickness = 2 });
+        _drawProbe?.Invoke();
 
         _hits.ForEach(p => Draw.Circle(new Vector2f(p.X, p.Y), 3,
             new DrawOptions { FillColor = HitColor, OutlineColor = HitColor, OutlineThickness = 1 }));
     }
 
+    private void Evaluate(Circle<float> p) => Evaluate(
+        p.Overlaps(_rectangle), p.Overlaps(_triangle), p.Overlaps(_circle), p.Overlaps(_line),
+        p.Contains(_rectangle), p.Contains(_triangle), p.Contains(_circle), p.Contains(_line),
+        p.Intersects(_rectangle), p.Intersects(_triangle), p.Intersects(_circle), p.Intersects(_line),
+        () => p.DrawSelf(ProbeStyle));
+
+    private void Evaluate(Rectangle<float> p) => Evaluate(
+        p.Overlaps(_rectangle), p.Overlaps(_triangle), p.Overlaps(_circle), p.Overlaps(_line),
+        p.Contains(_rectangle), p.Contains(_triangle), p.Contains(_circle), p.Contains(_line),
+        p.Intersects(_rectangle), p.Intersects(_triangle), p.Intersects(_circle), p.Intersects(_line),
+        () => p.DrawSelf(ProbeStyle));
+
+    private void Evaluate(Triangle<float> p) => Evaluate(
+        p.Overlaps(_rectangle), p.Overlaps(_triangle), p.Overlaps(_circle), p.Overlaps(_line),
+        p.Contains(_rectangle), p.Contains(_triangle), p.Contains(_circle), p.Contains(_line),
+        p.Intersects(_rectangle), p.Intersects(_triangle), p.Intersects(_circle), p.Intersects(_line),
+        () => p.DrawSelf(ProbeStyle));
+
+    private void Evaluate(
+        bool oRect, bool oTri, bool oCir, bool oLine,
+        bool cRect, bool cTri, bool cCir, bool cLine,
+        IEnumerable<Vector2D<float>> hRect, IEnumerable<Vector2D<float>> hTri,
+        IEnumerable<Vector2D<float>> hCir, IEnumerable<Vector2D<float>> hLine,
+        Action drawProbe)
+    {
+        _overlap = [oRect, oTri, oCir, oLine];
+        _contain = [cRect, cTri, cCir, cLine];
+        _overlaps = _overlap.Count(b => b);
+        _contained = _contain.Count(b => b);
+
+        _hits.Clear();
+        _hits.AddRange(hRect);
+        _hits.AddRange(hTri);
+        _hits.AddRange(hCir);
+        _hits.AddRange(hLine);
+
+        _drawProbe = drawProbe;
+    }
+
+    private static ProbeShape Next(ProbeShape shape) => shape switch
+    {
+        ProbeShape.Circle => ProbeShape.Rectangle,
+        ProbeShape.Rectangle => ProbeShape.Triangle,
+        _ => ProbeShape.Circle
+    };
+
     private static DrawOptions StyleFor(bool overlap, bool contained)
     {
         if (contained)
-            return new DrawOptions { FillColor = ContainFill, OutlineColor = Color.White, OutlineThickness = 2 };
+            return new DrawOptions { FillColor = ContainFill, OutlineColor = ContainOutline, OutlineThickness = 2 };
         if (overlap)
             return new DrawOptions { FillColor = OverlapFill, OutlineColor = OverlapOutline, OutlineThickness = 2 };
 
@@ -103,7 +173,5 @@ public class GeometryDemo : Scene
     }
 
     private static Color LineColor(bool overlap, bool contained)
-        => contained ? Color.White : overlap ? OverlapOutline : IdleOutline;
-
-    private static int Count(params bool[] flags) => flags.Count(flag => flag);
+        => contained ? ContainOutline : overlap ? OverlapOutline : IdleOutline;
 }

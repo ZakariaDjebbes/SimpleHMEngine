@@ -10,7 +10,7 @@
     <!-- NuGet package metadata -->
     <PropertyGroup>
         <PackageId>SimpleHMEngine</PackageId>
-        <Version>0.3.0</Version>
+        <Version>0.3.1</Version>
         <Authors>Zakaria Djebbes</Authors>
         <Company>Zakaria Djebbes</Company>
         <Product>SimpleHMEngine</Product>
@@ -22,7 +22,7 @@
         <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>0.3.0: Scene, persistence and input overhaul (contains breaking changes). Scene switching is now destructive and centralized in SceneManager.Load: the current scene is torn down and the next built fresh, removing the double/triple OnClose and the surprising side-effecting Scene.Current setter (Scene.Current is now a plain property). Added cross-scene persistence via the [Persistent] field attribute (one shared instance per component type, started once, spared from teardown, with field write-back), reachable through SceneManager.GetPersistentComponent&lt;T&gt;(). Added the [Detached] field attribute to opt a component field out of automatic discovery, and a cycle guard to the field scan. Input bindings are now two-tier: BindAction is scene-scoped and cleared on every switch, while the new BindGlobalAction overloads survive switches; InvokeActions iterates a snapshot so a binding that switches scenes can no longer corrupt the enumeration. BREAKING: removed the unused SceneManager scene registry APIs (RemoveScene, GetScene, GetRequiredScene, GetAllScenes). Also fixes Draw shared shapes inheriting rotation/outline/fill from a previous draw (options are now applied unconditionally with explicit fallbacks). Drawing ergonomics: added Draw.Clear(color) which clears the window Draw actually renders to (correct under SetDrawingWindow redirects), an implicit Color-to-DrawOptions/TextDrawOptions conversion so a color can be passed straight to a draw call, and a fluent DrawOptions builder (DrawOptions.Fill/Outline/Rotated plus WithFill/WithOutline/WithRotation/WithOpacity).</PackageReleaseNotes>
+        <PackageReleaseNotes>0.3.1: Sprite drawing and a coordinate transform stack. Added Draw.Sprite, which draws a textured sprite immediately with no Scene or Component, configured through SpriteDrawOptions (an explicit texture or a texture path, an optional source rectangle, scale, origin and tint), with implicit conversions from Texture and string and a fluent builder; the engine now ships a small embedded default texture used by sprites with no texture set, and Sprite2D shares the cached texture instead of copying it per instance. Added a coordinate transform stack to Draw (Translate, Scale, Rotate, Push/Pop, and a disposable Draw.Pushed() scope with fluent calls) applied through RenderStates only, so it affects Draw's own output and never the window view, scenes or components, with a per-frame reset that bounds a forgotten Pop to a single frame. Added Draw.DrawMode(Anchor), which sets how the box primitives (Rectangle, Text, Sprite) anchor their position. Moved the drawing option types into the Core.Drawing.DrawOption namespace. Fixes: replaced the oversized 4096x4096 default texture with a 64x64 one and removed an unnecessary GCHandle pin on the default texture bytes. Added UiCanvas.Find&lt;T&gt;() to look up a root or nested UI element by type.</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
@@ -45,6 +45,9 @@
       <None Include="README.md" Pack="true" PackagePath="\" />
       <EmbeddedResource Include="Resources\DefaultResources\default.ttf">
         <LogicalName>Core.Resources.DefaultResources.default.ttf</LogicalName>
+      </EmbeddedResource>
+      <EmbeddedResource Include="Resources\DefaultResources\default.png">
+        <LogicalName>Core.Resources.DefaultResources.default.png</LogicalName>
       </EmbeddedResource>
     </ItemGroup>
 

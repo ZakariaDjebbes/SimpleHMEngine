@@ -101,16 +101,16 @@ public class UiCheckbox : UiElement
 
         var color = IsHeld ? PressedColor : IsHovered ? HoverColor : BoxColor;
         Draw.Rectangle(Position.X, Position.Y, _boxSize.X, _boxSize.Y,
-            new DrawOptions { FillColor = color, OutlineColor = OutlineColor, OutlineThickness = 2 });
+            new DrawOption.DrawOptions { FillColor = color, OutlineColor = OutlineColor, OutlineThickness = 2 });
 
         if (!Checked) return;
 
         const float pad = 5f;
         Draw.Line(new Vector2f(Position.X + pad, Position.Y + pad),
             new Vector2f(Position.X + _boxSize.X - pad, Position.Y + _boxSize.Y - pad),
-            new DrawOptions { FillColor = CheckColor });
+            new DrawOption.DrawOptions { FillColor = CheckColor });
         Draw.Line(new Vector2f(Position.X + _boxSize.X - pad, Position.Y + pad),
             new Vector2f(Position.X + pad, Position.Y + _boxSize.Y - pad),
-            new DrawOptions { FillColor = CheckColor });
+            new DrawOption.DrawOptions { FillColor = CheckColor });
     }
 }

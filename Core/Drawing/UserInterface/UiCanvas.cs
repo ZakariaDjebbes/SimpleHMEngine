@@ -32,6 +32,25 @@ public class UiCanvas : Component
         }
     }
 
+    /// <summary>
+    /// Finds the first root or nested element of type <typeparamref name="T"/> in the canvas.
+    /// </summary>
+    /// <typeparam name="T">
+    ///    The type of the <see cref="UiElement"/> to find.
+    /// </typeparam>
+    /// <returns>
+    ///  The found element.
+    /// </returns>
+    public T Find<T>() where T : UiElement
+    {
+        foreach (var root in _roots)
+        {
+            if (root is T match) return match;
+            if (root.FindComponentInChildren<T>() is { } nested) return nested;
+        }
+        return null;
+    }
+    
     /// <summary>Measures, anchors and starts every root element.</summary>
     protected override void Start()
     {

@@ -1,4 +1,5 @@
 using Core.Collider;
+using Core.Drawing;
 using Core.Entity;
 using Core.Input;
 
@@ -156,7 +157,8 @@ public abstract class UserWindow
     private void OnRender()
     {
         if (SceneManager.SceneSwapped) return;
-        
+
+        Draw.BeginFrame();
         Render();
         Scene.Current?.OnRender();
         Scene.Current?.RenderAll();

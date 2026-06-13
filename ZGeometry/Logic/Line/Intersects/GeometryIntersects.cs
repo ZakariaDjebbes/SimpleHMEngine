@@ -89,51 +89,41 @@ public static partial class Geometry
     {
         var intersections = new HashSet<Vector2D<T1>>();
 
-        // Vector from line start to circle center
-        var d = circle.Center - line.Start;
-        
-        // Project circle center onto line
         var lineDir = line.Vector;
         var lineLengthSquared = lineDir.MagnitudeSquared();
-        var projection = lineDir.DotProduct(d) / lineLengthSquared;
-        
-        // Clamp projection to line segment
-        projection = T1.Clamp(projection, T1.Zero, T1.One);
-        
-        // Closest point on line to circle center
-        var closestPoint = line.Start + lineDir * projection;
-        
-        // Distance from closest point to circle center
-        var distanceSquared = (closestPoint - circle.Center).MagnitudeSquared();
+        if (lineLengthSquared == T1.Zero)
+            return intersections; // Degenerate (zero-length) segment.
+
+        // Foot of the perpendicular from the circle centre onto the INFINITE line. This must not be
+        // clamped to the segment: the half-chord below is sqrt(r^2 - perpendicular^2), which is only
+        // valid when measured from the true perpendicular foot. Clamping to an endpoint first makes the
+        // computed points drift off the circle near segment ends. The on-segment filter happens after,
+        // by discarding whichever candidate falls outside the segment.
+        var projection = lineDir.DotProduct(circle.Center - line.Start) / lineLengthSquared;
+        var foot = line.Start + lineDir * projection;
+
+        var perpendicularSquared = (foot - circle.Center).MagnitudeSquared();
         var radiusSquared = circle.Radius * circle.Radius;
-        
-        // If distance equals radius, we have one intersection point
-        if (distanceSquared == radiusSquared)
-        {
-            intersections.Add(closestPoint);
-        }
-        // If distance is less than radius, we have two intersection points
-        else if (distanceSquared < radiusSquared)
-        {
-            // Calculate the distance from closest point to intersection points
-            var distanceToIntersection = T1.CreateTruncating(MathF.Sqrt(float.CreateTruncating(radiusSquared - distanceSquared)));
-            var lineDirNormalized = lineDir / T1.CreateTruncating(MathF.Sqrt(float.CreateTruncating(lineLengthSquared)));
-            
-            // Calculate both intersection points
-            var intersection1 = closestPoint + lineDirNormalized * distanceToIntersection;
-            var intersection2 = closestPoint - lineDirNormalized * distanceToIntersection;
-            
-            // Only add points that are on the line segment
-            if (Contains(intersection1, line))
-            {
-                intersections.Add(intersection1);
-            }
-            if (Contains(intersection2, line))
-            {
-                intersections.Add(intersection2);
-            }
-        }
-        
+        if (perpendicularSquared > radiusSquared)
+            return intersections; // The line stays farther than the radius: no crossing.
+
+        var lineLength = T1.CreateTruncating(MathF.Sqrt(float.CreateTruncating(lineLengthSquared)));
+        var halfChord = T1.CreateTruncating(MathF.Sqrt(float.CreateTruncating(radiusSquared - perpendicularSquared)));
+
+        // Positions of the two crossings as a parameter along the segment (0 = Start, 1 = End). The
+        // points are on the line by construction, so keep the ones whose parameter falls within the
+        // segment directly. This deliberately avoids Contains(point, line), whose 1e-10 collinearity
+        // tolerance rejects float-rounded points and would drop every real crossing. A tangent
+        // (halfChord == 0) gives t1 == t2, and the HashSet collapses it to a single point.
+        var step = halfChord / lineLength;
+        var t1 = projection + step;
+        var t2 = projection - step;
+
+        if (t1 >= T1.Zero && t1 <= T1.One)
+            intersections.Add(line.Start + lineDir * t1);
+        if (t2 >= T1.Zero && t2 <= T1.One)
+            intersections.Add(line.Start + lineDir * t2);
+
         return intersections;
     }
 }

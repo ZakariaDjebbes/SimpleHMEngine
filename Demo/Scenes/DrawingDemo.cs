@@ -1,4 +1,5 @@
 using Core.Drawing;
+using Core.Drawing.DrawOption;
 using Core.Drawing.UserInterface;
 using Core.Engine;
 using Core.Entity;
@@ -69,6 +70,22 @@ public class DrawingDemo : Scene
         Draw.Text("Embedded font", new Vector2f(960, top + 200), new TextDrawOptions { FillColor = Color.White, CharacterSize = 28 });
         Draw.Text("with outline", new Vector2f(960, top + 245),
             new TextDrawOptions { FillColor = Palette.LightAqua, OutlineColor = Color.Black, OutlineThickness = 2, CharacterSize = 28 });
+
+        // Sprite: no texture set, so Draw.Sprite falls back to the engine's default texture. Tinted,
+        // scaled and rotated through the fluent SpriteDrawOptions — no Scene/Component needed.
+        Draw.Sprite(new Vector2f(200, top + 360),
+            new SpriteDrawOptions().WithScale(1.2f).WithRotation(12f).WithTint(Palette.Beige));
+        Label("Sprite (default texture)", 170, top + 460);
+
+        // Transform stack + anchor: the scope translates/rotates a local frame and centers the squares
+        // on their positions. Pop is automatic at the end of the using block, so nothing leaks.
+        using (Draw.Pushed().Translate(560, top + 400).Rotate(20f).Mode(Anchor.Center))
+        {
+            for (var i = 0; i < 5; i++)
+                Draw.Rectangle(i * 36, 0, 28, 28,
+                    new DrawOptions { FillColor = i % 2 == 0 ? Palette.LightAqua : Palette.LightRed });
+        }
+        Label("Transform + anchor", 560, top + 460);
     }
 
     private static void Label(string text, float x, float y)

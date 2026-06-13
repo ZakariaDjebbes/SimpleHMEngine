@@ -1,4 +1,5 @@
 using System.Numerics;
+using Core.Drawing.DrawOption;
 using SFML.System;
 using ZGeometry.Primitives.Circle;
 using ZGeometry.Primitives.Line;

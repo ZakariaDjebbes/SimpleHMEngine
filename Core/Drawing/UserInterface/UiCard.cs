@@ -68,12 +68,12 @@ public class UiCard : UiElement
 
             if (OutlineThickness > 0)
                 Draw.Rectangle(Position.X, Position.Y, Size.X, Size.Y,
-                    new DrawOptions { FillColor = Color.Transparent, OutlineColor = OutlineColor, OutlineThickness = OutlineThickness });
+                    new DrawOption.DrawOptions { FillColor = Color.Transparent, OutlineColor = OutlineColor, OutlineThickness = OutlineThickness });
         }
         else
         {
             Draw.Rectangle(Position.X, Position.Y, Size.X, Size.Y,
-                new DrawOptions { FillColor = BackgroundColor, OutlineColor = OutlineColor, OutlineThickness = OutlineThickness });
+                new DrawOption.DrawOptions { FillColor = BackgroundColor, OutlineColor = OutlineColor, OutlineThickness = OutlineThickness });
         }
     }
 }

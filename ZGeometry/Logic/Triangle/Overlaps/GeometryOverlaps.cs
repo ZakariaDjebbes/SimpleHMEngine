@@ -84,5 +84,33 @@ public static partial class Geometry
     /// <returns>True if the triangle and circle share any area or boundary; otherwise, false.</returns>
     public static bool Overlaps<T1>(Triangle<T1> triangle, Circle<T1> circle)
         where T1 : struct, INumber<T1>
-        => Contains(circle.Center, triangle) || Intersects(triangle, circle).Any();
+    {
+        // The circle overlaps the triangle if its centre is inside the triangle (covers "circle inside
+        // triangle"), or any edge comes within the radius of the centre. The edge-distance test also
+        // covers a vertex poking into the circle and the triangle sitting entirely inside the circle,
+        // so this no longer depends on the intersection-point set.
+        if (Contains(circle.Center, triangle))
+            return true;
+
+        var radiusSquared = circle.Radius * circle.Radius;
+        for (var i = 0; i < Triangle<T1>.SideCount; i++)
+            if (SegmentDistanceSquared(triangle.Side(i), circle.Center) <= radiusSquared)
+                return true;
+
+        return false;
+    }
+
+    // Squared distance from a point to a line segment (projection clamped to the segment).
+    private static T1 SegmentDistanceSquared<T1>(Line<T1> segment, Vector2D<T1> point)
+        where T1 : struct, INumber<T1>
+    {
+        var direction = segment.Vector;
+        var lengthSquared = direction.MagnitudeSquared();
+        if (lengthSquared == T1.Zero)
+            return (point - segment.Start).MagnitudeSquared();
+
+        var t = T1.Clamp(direction.DotProduct(point - segment.Start) / lengthSquared, T1.Zero, T1.One);
+        var closest = segment.Start + direction * t;
+        return (point - closest).MagnitudeSquared();
+    }
 }
