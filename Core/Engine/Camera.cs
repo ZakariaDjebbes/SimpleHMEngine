@@ -5,9 +5,8 @@ using SFML.System;
 namespace Core.Engine;
 
 /// <summary>
-/// A camera component that drives the render window's <see cref="View"/>. It follows a target
-/// (its parent by default) with an optional offset, zoom and smoothing. Being a Core component,
-/// any game object can attach one to become the scene's viewpoint.
+/// A camera component that drives the render window's <see cref="View"/>. It follows a target <see cref="Component"/>
+/// (its parent by default) with an optional offset, zoom and smoothing.
 /// </summary>
 public class Camera : Component
 {

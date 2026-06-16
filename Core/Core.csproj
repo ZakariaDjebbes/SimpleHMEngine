@@ -10,7 +10,7 @@
     <!-- NuGet package metadata -->
     <PropertyGroup>
         <PackageId>SimpleHMEngine</PackageId>
-        <Version>0.3.1</Version>
+        <Version>0.3.2</Version>
         <Authors>Zakaria Djebbes</Authors>
         <Company>Zakaria Djebbes</Company>
         <Product>SimpleHMEngine</Product>
@@ -22,7 +22,7 @@
         <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>0.3.1: Sprite drawing and a coordinate transform stack. Added Draw.Sprite, which draws a textured sprite immediately with no Scene or Component, configured through SpriteDrawOptions (an explicit texture or a texture path, an optional source rectangle, scale, origin and tint), with implicit conversions from Texture and string and a fluent builder; the engine now ships a small embedded default texture used by sprites with no texture set, and Sprite2D shares the cached texture instead of copying it per instance. Added a coordinate transform stack to Draw (Translate, Scale, Rotate, Push/Pop, and a disposable Draw.Pushed() scope with fluent calls) applied through RenderStates only, so it affects Draw's own output and never the window view, scenes or components, with a per-frame reset that bounds a forgotten Pop to a single frame. Added Draw.DrawMode(Anchor), which sets how the box primitives (Rectangle, Text, Sprite) anchor their position. Moved the drawing option types into the Core.Drawing.DrawOption namespace. Fixes: replaced the oversized 4096x4096 default texture with a 64x64 one and removed an unnecessary GCHandle pin on the default texture bytes. Added UiCanvas.Find&lt;T&gt;() to look up a root or nested UI element by type.</PackageReleaseNotes>
+        <PackageReleaseNotes>0.3.2: Extensible resource manager. What counts as a resource is now open: a loader registry (ResourceManager.RegisterLoader / RegisterStreamLoader / RegisterFallback) replaces the hardcoded type switch, so consumers can load their own types (JSON, config, custom formats) without modifying the engine. Built-in loaders now also cover raw text (string) and raw bytes (byte[]) alongside textures, fonts, sound buffers, sprites and colour palettes. Added non-file sources via streams: GetResource(key, stream) and GetEmbeddedResource(name); EmbeddedResources now routes through the manager. Robustness: GetResource returns a registered fallback on failure (textures and fonts fall back to the embedded defaults) or throws ResourceLoadException with context; added TryGetResource (no throw on a missing/invalid file); Clear and the new Unload(path) dispose native handles; cache keys are normalised to full paths; folder loads skip files that fail instead of aborting.</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
