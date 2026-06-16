@@ -199,9 +199,8 @@ public static class Draw
     {
         if (options?.Texture is { } texture)
             return texture;
-        if (options?.TexturePath is { } path)
-            return ResourceManager<Texture>.GetResource(path);
-        return EmbeddedResources.DefaultTexture;
+        
+        return ResourceManager<Texture>.GetResource(options?.TexturePath);
     }
 
     /// <summary>
@@ -309,9 +308,7 @@ public static class Draw
         {
             case Text text:
                 var textOptions = options as TextDrawOptions;
-                text.Font = textOptions?.FontPath is null
-                    ? EmbeddedResources.DefaultFont
-                    : ResourceManager<Font>.GetResource(textOptions.FontPath);
+                text.Font = ResourceManager<Font>.GetResource(textOptions?.FontPath);
                 text.CharacterSize = textOptions?.CharacterSize ?? 16;
                 text.OutlineColor = options?.OutlineColor ?? Color.Transparent;
                 text.OutlineThickness = options?.OutlineThickness ?? 0f;

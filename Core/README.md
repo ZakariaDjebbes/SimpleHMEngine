@@ -221,6 +221,33 @@ position refers to. It applies to `Rectangle`, `Text` and `Sprite`; the default 
 `Center` is handy for centering things. Circles, triangles, lines and polylines are defined by their
 own points, so the anchor does not apply to them.
 
+### 8. Resources
+
+`ResourceManager<T>` loads and caches resources by path. Textures, fonts, sound buffers, sprites,
+colour palettes, raw text (`string`) and raw bytes (`byte[]`) work out of the box:
+
+```csharp
+var texture = ResourceManager<Texture>.GetResource("Resources/player.png");
+var level   = ResourceManager<string>.GetResource("Resources/level1.txt");
+var blob    = ResourceManager<byte[]>.GetResource("Resources/save.bin");
+```
+
+What counts as a resource is open, register your own loader once at startup (e.g. JSON, using the
+in-box `System.Text.Json`):
+
+```csharp
+ResourceManager.RegisterLoader<PlayerConfig>(
+    path => JsonSerializer.Deserialize<PlayerConfig>(File.ReadAllText(path)));
+
+var config = ResourceManager<PlayerConfig>.GetResource("Resources/player.json");
+```
+
+Other entry points: `TryGetResource` (no throw on a missing/invalid file), `GetResource(key, stream)`
+and `GetEmbeddedResource(name)` for non-file sources, `Unload(path)` and `Clear()` (both dispose native
+handles). `GetResource` returns a registered fallback on failure — textures and fonts fall back to the
+embedded defaults — or throws `ResourceLoadException` if none is registered. Register your own with
+`ResourceManager.RegisterFallback<T>(...)`.
+
 ## Namespaces at a glance
 
 | Namespace                     | What's in it                                             |

@@ -18,10 +18,10 @@ public class TileMapDemo : Scene
 {
     private const int Columns = 40;
     private const int Rows = 24;
-    private const int TilePx = 16;
+    private const int TilePx = 32;
     private const int Scale = 3;
 
-    private readonly TileMap _map = new(new Vector2D<int>(TilePx, TilePx), "Resources/Sprites/catacomb.png")
+    private readonly TileMap _map = new(new Vector2D<int>(TilePx, TilePx), "Resources/Sprites/tiles.png")
     {
         TileScale = new Vector2f(Scale, Scale),
         Tiles = BuildTiles()
@@ -69,18 +69,26 @@ public class TileMapDemo : Scene
 public class CameraRig : Component
 {
     private const float Speed = 400f;
+    private const float Zoom = 0.01f;
     private readonly Camera _camera = new() { Smoothing = 0.0025f };
+    private Vector2f _dir;
 
-    protected override void Start() => AddComponent(_camera);
+    protected override void Start()
+    {        
+        InputManager.BindAction(Keyboard.Key.Z, ActionType.Held, () => _dir.Y -= 1);
+        InputManager.BindAction(Keyboard.Key.S, ActionType.Held, () => _dir.Y += 1);
+        InputManager.BindAction(Keyboard.Key.Q, ActionType.Held, () => _dir.X -= 1);
+        InputManager.BindAction(Keyboard.Key.D, ActionType.Held, () => _dir.X += 1);
+        InputManager.BindAction(Keyboard.Key.Add, ActionType.Held, () => _camera.Zoom += Zoom);
+        InputManager.BindAction(Keyboard.Key.Subtract, ActionType.Held, () => _camera.Zoom -= Zoom);
+
+        AddComponent(_camera);
+    }
+
 
     protected override void FixedUpdate()
     {
-        var dir = new Vector2f();
-        if (Keyboard.IsKeyPressed(Keyboard.Key.W) || Keyboard.IsKeyPressed(Keyboard.Key.Up)) dir.Y -= 1;
-        if (Keyboard.IsKeyPressed(Keyboard.Key.S) || Keyboard.IsKeyPressed(Keyboard.Key.Down)) dir.Y += 1;
-        if (Keyboard.IsKeyPressed(Keyboard.Key.A) || Keyboard.IsKeyPressed(Keyboard.Key.Left)) dir.X -= 1;
-        if (Keyboard.IsKeyPressed(Keyboard.Key.D) || Keyboard.IsKeyPressed(Keyboard.Key.Right)) dir.X += 1;
-
-        Position += dir * Speed * GameContext.FixedDeltaTime;
+        Position += _dir * Speed * GameContext.FixedDeltaTime;
+        _dir = new Vector2f();
     }
 }

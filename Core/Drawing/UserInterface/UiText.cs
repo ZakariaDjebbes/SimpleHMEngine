@@ -61,9 +61,7 @@ public class UiText : UiElement
     /// <summary>Resolves the font (theme override or embedded default) and measures the text.</summary>
     protected override void Start()
     {
-        _text.Font = UiTheme.FontPath is null
-            ? EmbeddedResources.DefaultFont
-            : ResourceManager<Font>.GetResource(UiTheme.FontPath);
+        _text.Font = ResourceManager<Font>.GetResource(UiTheme.FontPath);
         Measure();
     }
 
