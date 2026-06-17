@@ -10,7 +10,7 @@
     <!-- NuGet package metadata -->
     <PropertyGroup>
         <PackageId>SimpleHMEngine</PackageId>
-        <Version>0.3.2</Version>
+        <Version>0.3.3</Version>
         <Authors>Zakaria Djebbes</Authors>
         <Company>Zakaria Djebbes</Company>
         <Product>SimpleHMEngine</Product>
@@ -22,7 +22,7 @@
         <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>0.3.2: Extensible resource manager. What counts as a resource is now open: a loader registry (ResourceManager.RegisterLoader / RegisterStreamLoader / RegisterFallback) replaces the hardcoded type switch, so consumers can load their own types (JSON, config, custom formats) without modifying the engine. Built-in loaders now also cover raw text (string) and raw bytes (byte[]) alongside textures, fonts, sound buffers, sprites and colour palettes. Added non-file sources via streams: GetResource(key, stream) and GetEmbeddedResource(name); EmbeddedResources now routes through the manager. Robustness: GetResource returns a registered fallback on failure (textures and fonts fall back to the embedded defaults) or throws ResourceLoadException with context; added TryGetResource (no throw on a missing/invalid file); Clear and the new Unload(path) dispose native handles; cache keys are normalised to full paths; folder loads skip files that fail instead of aborting.</PackageReleaseNotes>
+        <PackageReleaseNotes>0.3.3: Fix default resources crashing on a null/empty resource path. Since 0.3.2, drawing with the built-in defaults — e.g. Draw.Text with only a colour, Draw.Sprite with no texture, or UiText with no theme font — threw ArgumentNullException because the null path reached Path.GetFullPath before the fallback could apply. A null or empty path now resolves to the registered fallback (the embedded default font/texture) instead, or throws ResourceLoadException if no fallback exists; TryGetResource returns false. The default case is silent while genuine load failures are still logged.</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
