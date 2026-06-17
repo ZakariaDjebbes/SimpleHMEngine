@@ -122,6 +122,14 @@ public static class Draw
     public static void Vertices(VertexArray vertices) => _window.Draw(vertices, CurrentStates());
 
     /// <summary>
+    /// Draws a prebuilt vertex array with caller-supplied render states (e.g. a texture and transform).
+    /// Use this for textured static geometry such as tile maps that manage their own transform.
+    /// </summary>
+    /// <param name="vertices">The vertex array to draw.</param>
+    /// <param name="states">The render states (texture, transform, blend mode, shader) to draw with.</param>
+    public static void Vertices(VertexArray vertices, RenderStates states) => _window.Draw(vertices, states);
+
+    /// <summary>
     /// Draws a connected polyline through the given points.
     /// </summary>
     /// <param name="points">The points to connect, in order.</param>
