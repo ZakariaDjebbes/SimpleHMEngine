@@ -34,6 +34,18 @@ public static class ResourceManager<T> where T : class
     /// <exception cref="ResourceLoadException">Loading failed and no fallback is registered.</exception>
     public static T GetResource(string filePath)
     {
+        // A null/empty path means "nothing to load" — callers (e.g. Draw with no font/texture path) rely
+        // on this resolving silently to the registered fallback rather than throwing. This is the normal
+        // "use the default" case, so it is not logged.
+        if (string.IsNullOrEmpty(filePath))
+        {
+            if (TryFallback(out var defaulted))
+                return defaulted;
+
+            throw new ResourceLoadException(typeof(T), "(null)",
+                new ArgumentException("Resource path is null or empty and no fallback is registered.", nameof(filePath)));
+        }
+
         var key = Normalize(filePath);
         if (Resources.TryGetValue(key, out var cached))
             return cached;
@@ -47,14 +59,26 @@ public static class ResourceManager<T> where T : class
         }
         catch (Exception exception)
         {
-            if (ResourceManager.TryGetFallback(typeof(T), out var fallback))
+            if (TryFallback(out var fallback))
             {
-                Debug.WriteLine($"ResourceManager: failed to load {typeof(T).Name} from '{filePath}'; returning fallback. {exception.Message}");
-                return (T)fallback(); // deliberately not cached, so a later attempt can still succeed
+                Debug.WriteLine($"ResourceManager: could not load {typeof(T).Name} from '{filePath}'; returning fallback. {exception.Message}");
+                return fallback; // deliberately not cached, so a later attempt can still succeed
             }
 
             throw new ResourceLoadException(typeof(T), filePath, exception);
         }
+    }
+
+    private static bool TryFallback(out T fallback)
+    {
+        if (ResourceManager.TryGetFallback(typeof(T), out var factory))
+        {
+            fallback = (T)factory();
+            return true;
+        }
+
+        fallback = null;
+        return false;
     }
 
     /// <summary>
@@ -67,6 +91,12 @@ public static class ResourceManager<T> where T : class
     /// <exception cref="InvalidOperationException">No loader is registered for <typeparamref name="T"/>.</exception>
     public static bool TryGetResource(string filePath, out T resource)
     {
+        if (string.IsNullOrEmpty(filePath))
+        {
+            resource = null;
+            return false;
+        }
+
         var key = Normalize(filePath);
         if (Resources.TryGetValue(key, out resource))
             return true;
