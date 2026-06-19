@@ -10,7 +10,7 @@
     <!-- NuGet package metadata -->
     <PropertyGroup>
         <PackageId>SimpleHMEngine</PackageId>
-        <Version>0.3.3</Version>
+        <Version>0.4.0</Version>
         <Authors>Zakaria Djebbes</Authors>
         <Company>Zakaria Djebbes</Company>
         <Product>SimpleHMEngine</Product>
@@ -22,7 +22,7 @@
         <PackageProjectUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine</PackageProjectUrl>
         <RepositoryUrl>https://github.com/ZakariaDjebbes/SimpleHMEngine.git</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageReleaseNotes>0.3.3: Fix default resources crashing on a null/empty resource path. Since 0.3.2, drawing with the built-in defaults — e.g. Draw.Text with only a colour, Draw.Sprite with no texture, or UiText with no theme font — threw ArgumentNullException because the null path reached Path.GetFullPath before the fallback could apply. A null or empty path now resolves to the registered fallback (the embedded default font/texture) instead, or throws ResourceLoadException if no fallback exists; TryGetResource returns false. The default case is silent while genuine load failures are still logged.</PackageReleaseNotes>
+        <PackageReleaseNotes>0.4.0: TileMap rework (breaking). Tiles are now grouped by layer and each layer is drawn lowest-first, so Tile.Layer is finally honoured; layers can be shown/hidden individually with SetLayerVisible. Position and TileScale are applied through a render transform instead of being baked into the vertices, so moving or scaling a map is free and no longer needs a manual Rebuild. Tiles support per-tile tint, horizontal/vertical flip and per-tile scale. Geometry is emitted as triangles rather than the SFML-3-removed Quads primitive, and the map draws through the Draw facade (honouring SetDrawingWindow). The tile collection is now keyed by cell and layer with SetTile/AddTiles/RemoveTile/TryGetTile/ClearTiles and lazy, dirty-tracked rebuilds (no more manual Rebuild after every change); added a MapPixelSize bound and an embedded-default texture fallback. BREAKING: TileMap.Tiles is now a read-only enumeration — use AddTiles/SetTile to populate it; the texture argument defaults to the embedded texture instead of a hardcoded path. Added Draw.Vertices(VertexArray, RenderStates).  Fix default resources crashing on a null/empty resource path</PackageReleaseNotes>
         <IncludeSymbols>true</IncludeSymbols>
         <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>

@@ -248,6 +248,42 @@ handles). `GetResource` returns a registered fallback on failure — textures an
 embedded defaults — or throws `ResourceLoadException` if none is registered. Register your own with
 `ResourceManager.RegisterFallback<T>(...)`.
 
+### 9. Tile maps
+
+`TileMap` is a `Component` that draws a grid of tiles cut from one sheet, grouped by layer (lowest
+drawn first) and batched into one draw call per layer. Its `Position` and `TileScale` are applied
+through a render transform, so moving or scaling the map is free.
+
+```csharp
+public class Level : Scene
+{
+    private readonly TileMap _map = new(new Vector2D<int>(16, 16), "Resources/tiles.png")
+    {
+        TileScale = new Vector2f(3, 3)
+    };
+
+    public override void OnStart()
+    {
+        // Floor on layer 0.
+        for (var x = 0; x < 20; x++)
+            for (var y = 0; y < 12; y++)
+                _map.SetTile(new Tile(new Vector2D<int>(0, 0), x, y));
+
+        // A tinted, flipped accent on layer 1, drawn on top.
+        _map.SetTile(new Tile(new Vector2D<int>(1, 0), 5, 5, layer: 1)
+        {
+            Tint = new Color(255, 220, 120, 210),
+            FlipX = true
+        });
+    }
+}
+```
+
+Tiles are keyed by cell and layer: `SetTile`/`AddTiles` place (and replace), `RemoveTile`/`TryGetTile`
+query, `ClearTiles` empties, and `SetLayerVisible(layer, visible)` toggles a layer. Rebuilds happen
+lazily when tiles change, so you never call `Rebuild()` by hand. Each `Tile` supports a `Tint`, per-tile
+`Scale`, and `FlipX`/`FlipY`. `MapPixelSize` reports the drawn extent (handy for centering a camera).
+
 ## Namespaces at a glance
 
 | Namespace                     | What's in it                                             |
